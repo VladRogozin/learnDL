@@ -1,0 +1,167 @@
+body {
+font-family: 'Pangolin', cursive;
+}
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.font-family-game {
+    font-size: 20px;
+        letter-spacing: 1.2px;
+}
+
+#result-message-container {
+    padding: 15px; /* Внутренний отступ */
+    font-size: 25px; /* Увеличение размера шрифта до 20 */
+    display: inline-block; /* Отображение как блочный элемент */
+    border-radius: 10px; /* Закругленные углы */
+    text-align: center; /* Центрирование текста */
+}
+
+.class-fo-h4 {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Тень текста */
+    font-size: 34px; /* Размер шрифта */
+
+}
+
+.my-dropdown-menu-center {
+    width: 80%;
+}
+
+.my-color-rule {
+    background-color: rgba(0, 0, 255, 0.2); /* Светло-прозрачный синий фон */
+    color: rgba(0, 0, 100);  /* Белый текст */
+    border: none; /* Убираем границу */
+}
+
+.my-dropdown-right {
+    display: flex;
+    justify-content: end;
+}
+
+
+.my-logo-img {
+    width: 100px; /* Устанавливаем ширину изображения в 100 пикселей */
+}
+
+.my-img-front {
+
+}
+
+.my-title-h1 {
+    font-size: 33px;
+    color: rgba(23, 0, 89); /* Зеленый текст */
+    text-align: center; /* Выравниваем текст по центру */
+    padding: 30px; /* Добавляем внутренний отступ для текста */
+    background-color: rgba(255, 255, 167, 0.8); /* Светло-прозрачный синий фон */
+    border: 2px solid rgba(255, 233, 167); /* Зеленая круглая рамка */
+    font-weight: bold; /* Добавляем жирность к тексту */
+    display: inline-block; /* Делаем блок инлайновым, чтобы он находился в центре горизонтально */
+}
+.nav-link {
+    font-size: 23px; /* Задайте желаемый размер шрифта */
+}
+@media (max-width: 768px) {
+    .my-title-h1 {
+        font-size: 15px; /* Уменьшаем размер шрифта для мобильных устройств */
+    }
+}
+
+
+.word-title {
+    font-size: 36px; /* Размер шрифта */
+    color: #333; /* Цвет текста */
+    text-align: center; /* Выравнивание по центру */
+    border-bottom: 1px solid #ccc; /* Горизонтальная линия под заголовком */
+    padding: 10px 0; /* Внутренние отступы сверху и снизу */
+    cursor: pointer; /* Изменение курсора при наведении */
+}
+
+.word-title:hover {
+    background-color: #f0f0f0; /* Изменение цвета при наведении */
+}
+
+.l-hover {
+    padding: 10px; /* Добавляем отступ вокруг элемента */
+    border: 1px solid #ccc; /* Добавляем рамку */
+    transition: background-color 0.3s; /* Добавляем анимацию изменения цвета при наведении */
+}
+
+.l-hover:hover {
+    background-color: #b9ffed; /* Изменение цвета при наведении */
+}
+
+
+.visually-hidden {
+        position: absolute;
+        clip: rect(1px, 1px, 1px, 1px);
+        padding: 0;
+        border: 0;
+        height: 1px;
+        width: 1px;
+        overflow: hidden;
+        white-space: nowrap;
+}
+
+.l-hover.selected {
+    background-color: #b9ffed; /* Цвет для выбранной опции */
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    outline: none;
+}
+
+.hidden {
+    display: none;
+}
+
+
+
+
+
+
+
+
+
+.b-color-red {
+    background-color: #ffb9ee; /* Цвет для выбранной опции */
+    color: black;
+}
+
+.b-color-red:hover {
+    background-color: #a5007d; /* Изменение цвета при наведении */
+    color: #fff4fc;
+}
+
+
+.b-color-orange {
+    background-color: #ffe490; /* Цвет для выбранной опции */
+    color: black;
+}
+
+.b-color-orange:hover {
+    background-color: #ffc107; /* Изменение цвета при наведении */
+    color: black;
+}
+
+.b-color-red-orange {
+    background-color: #ffc9b8;
+}
+
+.b-color-red-orange:hover {
+    background-color: #f33a00;
+    color: #fff4fc;
+}
+
+.b-color-green-blue {
+    background-color: #ccfff6;
+}
+
+.b-color-green-blue:hover {
+    background-color: #00a588;
+}

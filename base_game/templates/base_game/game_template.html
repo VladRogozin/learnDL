@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="container mt-5 font-family-game">
+    <h1 class="word-title" title="{{ word.translate }}">
+        {{ word.word }}
+    </h1>
+
+    <div id="result-message-container" class="mt-3 text-center">
+        <p id="result-message"></p>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-end">
+        <form id="game-form" class="flex-grow-1">
+            {% for option in options %}
+                <br>
+                <div class="form-check">
+                    <input class="form-check-input visually-hidden" type="radio" name="selected_option" value="{{ option|escape }}" id="option-{{ forloop.counter }}">
+                    <label class="form-check-label l-hover" for="option-{{ forloop.counter }}" title="{{ option.description|escapejs }}">
+                        {{ option }}
+                    </label>
+                </div>
+            {% endfor %}
+            <br>
+            <button type="button" class="btn b-color-orange" id="check-button">Перевірити</button>
+            <button type="button" class="btn b-color-green-blue" id="refresh-button">Наступне</button>
+        </form>
+
+        <form id="complaint-form" method="post" action="{% url 'words:complain_word' word.id %}" class="mt-3">
+            {% csrf_token %}
+            {{ complaint_form.as_p }}
+            <button type="submit" class="icon-button" title="Поскаржитися на дане слово або опис!">
+                <img src="{% static 'img/complaint.svg' %}" alt="Поскаржитися">
+            </button>
+        </form>
+    </div>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var options = document.querySelectorAll('.form-check-label.l-hover');
+    options.forEach(function(option) {
+        option.addEventListener('click', function() {
+            options.forEach(function(otherOption) {
+                otherOption.classList.remove('selected');
+            });
+            this.classList.add('selected');
+        });
+    });
+
+    document.getElementById('check-button').addEventListener('click', function() {
+        var selectedOption = document.querySelector('input[name="selected_option"]:checked');
+        var resultMessageContainer = document.getElementById('result-message-container');
+
+        if (selectedOption && selectedOption.value === "{{ word.description|escapejs }}") {
+            resultMessageContainer.textContent = 'Вірно!';
+            resultMessageContainer.style.backgroundColor = 'rgba(0, 128, 0, 0.2)';
+            resultMessageContainer.classList.remove('text-danger');
+            resultMessageContainer.classList.add('text-success');
+        } else {
+            resultMessageContainer.textContent = 'Спробуй ще!';
+            resultMessageContainer.style.backgroundColor = 'rgba(255, 0, 0, 0.2)';
+            resultMessageContainer.classList.remove('text-success');
+            resultMessageContainer.classList.add('text-danger');
+        }
+    });
+
+    document.getElementById('refresh-button').addEventListener('click', function() {
+        location.reload();
+    });
+});
+
+</script>
+{% endblock %}
+
+
+
+
+
+
+
+

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Перший ряд - зображення і текст -->
+    <div class="row position-relative">
+        <div class="">
+            <img class="img-fluid my-img-front" src="{% static 'img/img_1.jpeg' %}" alt="Зображення">
+        </div>
+        <div class="col-md-6 position-absolute top-0 end-0 text-right mt-5">
+            <p class="my-title-h1 font-weight-bold">Добро пожаловать на наш сайт, предназначенный для обучения словам через увлекательные игры!</p>
+            <p class="my-title-h1">"Мы стремимся создать уникальный опыт, который поможет вам улучшить свой словарный запас и развить языковые навыки, путем участия в увлекательных играх."</p>
+        </div>
+    </div>
+
+    <!-- Додайте форму для введення поради -->
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <h2 class="font-weight-bold">Залиште пораду</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="message">Порада:</label>
+                    <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Відправити</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+

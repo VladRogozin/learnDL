@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 text-center">
+            <h2>Твої плейлисти:</h2>
+            {% if playlists %}
+                <ul class="list-group">
+                    {% for playlist in playlists %}
+                    <li class="list-group-item playlist-item mb-2 word-title ">
+                        <a class="font-weight-bold" href="{% url 'my:playlist_detail' playlist.id %}">{{ playlist.title }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+            <p>Плейлистів ще немає.</p>
+            {% endif %}
+        </div>
+
+        <div class="col-md-6 mt-5">
+            <h2 class="mt-0">Створити плейлист</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ form.title.id_for_label }}">Назва плейлиста:</label>
+                    {{ form.title }}
+                </div>
+                <br>
+                <button type="submit" class="btn b-color-orange">Створити</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var playlistItems = document.querySelectorAll('.playlist-item');
+    var colors = ['#e0fff7', '#f7dfff', '#fff2cb'];  // Ваші доступні кольори
+
+    for (var i = 0; i < playlistItems.length; i++) {
+        var colorIndex = i % colors.length;  // Визначаємо індекс кольору для кожного плейлисту
+        var backgroundColor = colors[colorIndex];
+        playlistItems[i].style.backgroundColor = backgroundColor;
+    }
+</script>
+{% endblock %}
+
+

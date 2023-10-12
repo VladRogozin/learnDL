@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">{{ playlist.title }}</h1>
+
+    <div class="table-responsive">
+        <table class="table mt-4">
+            <thead>
+                <tr>
+                    <th>Слово</th>
+                    <th>Опис</th>
+                    <th>Переклад</th>
+                    <th>Видалити</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in playlist_items %}
+                <tr style="background-color: {{ item.row_color }}">
+                    <td>{{ item.word.word }}</td>
+                    <td>{{ item.word.description }}</td>
+                    <td>{{ item.word.translate }}</td>
+                    <td>
+                        <form method="post" action="{% url 'my:remove_word_from_playlist' playlist.id item.word.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn b-color-red-orange">Видалити</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">Плейлист порожній.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-4 d-flex flex-wrap justify-content-center">
+
+        <a href="{% url 'my:create_playlist' %}" class="btn b-color-red mx-2 mb-2">Створіть новий плейлист</a>
+        <a href="{% url 'my:create_my_game' playlist.id %}" class="btn b-color-orange mx-2 mb-2">Грати з цим плейлистом</a>
+        <button id="copy-link-btn" class="btn b-color-green-blue mx-2 mb-2">Скопіювати посилання</button>
+        <button id="delete-playlist-btn" class="btn btn-danger mx-2 mb-2">Видалити плейлист</button>
+    </div>
+
+</div>
+
+<script>
+    document.getElementById('copy-link-btn').addEventListener('click', function() {
+        // Створюємо тимчасовий інпут для копіювання
+        var tempInput = document.createElement('input');
+
+        // Встановлюємо значення в середині тимчасового інпута
+        tempInput.value = "{{ request.build_absolute_uri }}";
+
+        // Додаємо тимчасовий інпут на сторінку (не видимий)
+        document.body.appendChild(tempInput);
+
+        // Вибираємо текст всередині елемента
+        tempInput.select();
+
+        // Копіюємо текст у буфер обміну
+        document.execCommand('copy');
+
+        // Видаляємо тимчасовий інпут
+        document.body.removeChild(tempInput);
+
+        // Змінюємо текст кнопки на "Скопійовано!"
+        this.textContent = 'Скопійовано!';
+    });
+
+
+    document.getElementById('delete-playlist-btn').addEventListener('click', function() {
+        if (confirm('Ви впевнені, що хочете видалити цей плейлист і всі пов\'язані слова?')) {
+            window.location.href = "{% url 'my:delete_playlist' playlist.id %}";
+        }
+    });
+
+
+</script>
+{% endblock %}
+
