@@ -12,8 +12,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css">
+    <link rel="icon" href="{% static 'img/logo.png' %}" type="image/png">
 
-    <title>{% block title %}Заголовок страницы{% endblock %}</title>
+    <title>{% block title %}LEARN Deutsch{% endblock %}</title>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -27,17 +28,17 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 mx-auto">
                 <li class="nav-item mx-2">
-                    <a class="nav-link" href="{% url 'words:game' %}" style="font-weight: bold; color:#00a588;">Ігри</a>
+                    <a class="nav-link" href="{% url 'words:game' %}" style="color:#00a588;">Ігри</a>
                 </li>
                 <li class="nav-item mx-2">
-                    <a class="nav-link" href="{% url 'artikel:artikel_game' %}" style="font-weight: bold; color:#cfac08;">Гра артиклі</a>
+                    <a class="nav-link" href="{% url 'artikel:artikel_game' %}" style="color:#cfac08;">Гра артиклі</a>
                 </li>
                 {% if user.is_authenticated %}
                     <li class="nav-item mx-2">
-                        <a class="nav-link" href="{% url 'words:create_words' %}" style="font-weight: bold; color:#cf4808;">Додати слово</a>
+                        <a class="nav-link" href="{% url 'words:create_words' %}" style="color:#cf4808;">Додати слово</a>
                     </li>
                     <li class="nav-item mx-2">
-                        <a class="nav-link" href="{% url 'my:create_playlist' %}" style="font-weight: bold; color:#2d4097;">Плейлисти</a>
+                        <a class="nav-link" href="{% url 'my:create_playlist' %}" style="color:#2d4097;">Плейлисти</a>
                     </li>
                 {% endif %}
             </ul>
@@ -73,11 +74,9 @@
 
 
 
-<div class="container mt-5">
-
+<div class="container mt-2">
     {% block content %}
     {% endblock %}
-
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

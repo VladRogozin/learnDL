@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 
-
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -10,24 +9,24 @@
                     <h2 class="mb-0">Зареєструватися</h2>
                 </div>
                 <div class="card-body">
-                    <form method="post">
+                    <form method="post" class="needs-validation">
                         {% csrf_token %}
                         <div class="form-group">
-                            <label for="{{ form.username.id_for_label }}">Ім'я користувача</label>
-                            {{ form.username }}
+                            <label for="{{ form.username.id_for_label }}" class="form-label">Ім'я користувача</label>
+                            <input type="text" class="form-control" id="{{ form.username.id_for_label }}" name="{{ form.username.name }}" required>
                         </div>
                         <br>
                         <div class="form-group">
-                            <label for="{{ form.password1.id_for_label }}">Пароль</label>
-                            {{ form.password1 }}
+                            <label for="{{ form.password1.id_for_label }}" class="form-label">Пароль</label>
+                            <input type="password" class="form-control" id="{{ form.password1.id_for_label }}" name="{{ form.password1.name }}" required>
                         </div>
                         <br>
                         <div class="form-group">
-                            <label for="{{ form.password2.id_for_label }}">Підтвердити пароль</label>
-                            {{ form.password2 }}
+                            <label for="{{ form.password2.id_for_label }}" class="form-label">Підтвердити пароль</label>
+                            <input type="password" class="form-control" id="{{ form.password2.id_for_label }}" name="{{ form.password2.name }}" required>
                         </div>
-                        <div class="form-group mt-3"> <!-- Добавлен отступ между полями и кнопкой -->
-                            <button type="submit" class="btn btn-primary">Зареєструватися</button>
+                        <div class="form-group mt-3">
+                            <button type="submit" class="btn b-color-red ">Зареєструватися</button>
                         </div>
                     </form>
                 </div>
@@ -35,5 +34,4 @@
         </div>
     </div>
 </div>
-
 {% endblock %}

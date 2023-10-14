@@ -3,13 +3,13 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        <div class="col-md-6 text-center">
+        <div class="col-md-6 text-center mt-5 mb-5">
             <h2>Твої плейлисти:</h2>
             {% if playlists %}
                 <ul class="list-group">
                     {% for playlist in playlists %}
                     <li class="list-group-item playlist-item mb-2 word-title ">
-                        <a class="font-weight-bold" href="{% url 'my:playlist_detail' playlist.id %}">{{ playlist.title }}</a>
+                        <a class="" href="{% url 'my:playlist_detail' playlist.id %}">{{ playlist.title }}</a>
                     </li>
                     {% endfor %}
                 </ul>

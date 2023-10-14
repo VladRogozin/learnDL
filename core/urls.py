@@ -6,6 +6,8 @@ from django.conf import settings
 from tips.views import add_advice
 from django.contrib.auth import views as auth_views
 from accounts.views import register
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -20,3 +22,5 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns += staticfiles_urlpatterns()
