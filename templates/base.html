@@ -3,16 +3,17 @@
 <head>
     {% load static %}
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link href="https://fonts.googleapis.com/css2?family=Pangolin&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Coming+Soon&display=swap" rel="stylesheet">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css">
     <link rel="icon" href="{% static 'img/logo.png' %}" type="image/png">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
 
     <title>{% block title %}LEARN Deutsch{% endblock %}</title>
 </head>
@@ -33,7 +34,13 @@
                 <li class="nav-item mx-2">
                     <a class="nav-link" href="{% url 'artikel:artikel_game' %}" style="color:#cfac08;">Гра артиклі</a>
                 </li>
+                <li class="nav-item mx-2">
+                    <a class="nav-link" href="{% url 'matching:matching' %}" style="color:#cfac08;">Збери речення</a>
+                </li>
                 {% if user.is_authenticated %}
+                    <li class="nav-item mx-2">
+                        <a class="nav-link" href="{% url 'matching:create_sentence' %}" style="color:#cf4808;">Додати речення</a>
+                    </li>
                     <li class="nav-item mx-2">
                         <a class="nav-link" href="{% url 'words:create_words' %}" style="color:#cf4808;">Додати слово</a>
                     </li>

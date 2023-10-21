@@ -1,24 +1,35 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block content %}
+<div class="container font-family-game ">
 <div class="container">
     <div class="row">
-        <div class="col-md-6 text-center mt-5 mb-5">
+       <div class="col-md-6 text-center mt-5 mb-5">
             <h2>Твої плейлисти:</h2>
-            {% if playlists %}
+            <div class="playlist-container">
                 <ul class="list-group">
                     {% for playlist in playlists %}
-                    <li class="list-group-item playlist-item mb-2 word-title ">
-                        <a class="" href="{% url 'my:playlist_detail' playlist.id %}">{{ playlist.title }}</a>
+                    <li class="list-group-item playlist-item mb-2 word-title d-flex">
+                        <div class="col-9 new-line-anyway">
+                            <a class="playlist-link text-center" href="{% url 'my:playlist_detail' playlist.id %}">{{ playlist.title }}</a>
+                        </div>
+                        <div class="col-3">
+                            <a class="mx-2 mb-2 copy-link-btn mr-2"><img src="{% static 'img/link.svg' %}" alt="" style="width: 17px; height: 17px;" title="Копіювати посилання"></a>
+                            <a href="{% url 'my:delete_playlist' playlist.id %}" class="ml-2 delete-playlist" data-id="{{ playlist.id }}" title="Видалити">
+                                <img src="{% static 'img/complaint.svg' %}" alt="" style="width: 17px; height: 17px;">
+                            </a>
+                        </div>
                     </li>
                     {% endfor %}
+
+
                 </ul>
-            {% else %}
-            <p>Плейлистів ще немає.</p>
-            {% endif %}
+            </div>
         </div>
 
-        <div class="col-md-6 mt-5">
+        <div class="col-md-6 mt-5 mb-5">
             <h2 class="mt-0">Створити плейлист</h2>
             <form method="post">
                 {% csrf_token %}
@@ -31,10 +42,236 @@
             </form>
         </div>
     </div>
+     <h1 class="page-title">Ваші слова</h1>
+
+    <table class="table table-striped-columns table-hover small-size">
+        <thead>
+            <tr class="table-info">
+                <th>Речення</th>
+                {% if user.is_authenticated %}
+                <th>У плейлист</th>
+                <th>Видимість</th>
+                <th>Видалити</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for word in page_sentences %}
+            <tr class="">
+                <td>{{ word.text }}</td>
+                {% if user.is_authenticated %}
+                <td>
+                    <form method="POST" action="{% url 'my:add_to_playlist_sentences' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="word_id" value="{{ word.id }}">
+                        <div class="form-group mb-2">
+                            <select id="playlist" name="playlist" class="form-control form-control-sm">
+                                {% for playlist in user_playlists %}
+                                <option value="{{ playlist.id }}">{{ playlist.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-very-small b-color-red">Додати</button>
+                    </form>
+                </td>
+                <td>
+                    <form method="post" action="{% url 'my:toggle_word_visibility' word.id 'sentence' %}" class="toggle-visibility-form">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm b-color-blue toggle-visibility-button">
+                            {% if word.hide %}
+                                <img src="{% static 'img/not_show.svg' %}" alt="Скрыть">
+                            {% else %}
+                                <img src="{% static 'img/show.svg' %}" alt="Показать">
+                            {% endif %}
+                        </button>
+                    </form>
+                </td>
+                <td>
+                    <a href="{% url 'my:delete_word' word.id 'sentences' %}"><img src="{% static 'img/delete.svg' %}" alt="Видалити"></a>
+                </td>
+
+                {% endif %}
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">Нічого не знайдено.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <span class="current-page small-size">
+                {{ page_sentences.number }} з {{ page_sentences.paginator.num_pages }}.
+    </span>
+    <br>
+    <br>
+    <br>
+    <br>
+    <h1 class="page-title">Ваші речення</h1>
+    <br>
+    <table class="table table-striped-columns table-hover  small-size">
+        <thead>
+            <tr class="table-info">
+                <th>Слово - Переклад</th>
+                <th>Опис</th>
+                {% if user.is_authenticated %}
+                <th>У плейлист</th>
+                <th>Видимість</th>
+                <th>Видалити</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for word in page_words %}
+            <tr class="">
+                <td>{{ word.word }} - {{ word.translate }}</td>
+                <td>
+                    <span class="short-description">{{ word.description|slice:":20" }}</span>
+                    <span class="full-description" style="display: none;">{{ word.description }}</span>
+                        <img class="show-more-description" src="{% static 'img/dots.svg' %}" alt="Вивчив">
+                </td>
+                {% if user.is_authenticated %}
+                <td>
+                    <form method="POST" action="{% url 'my:add_to_playlist' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="word_id" value="{{ word.id }}">
+                        <div class="form-group mb-2">
+                            <select id="playlist" name="playlist" class="form-control form-control-sm">
+                                {% for playlist in user_playlists %}
+                                <option value="{{ playlist.id }}">{{ playlist.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-very-small b-color-red">Додати</button>
+                    </form>
+                </td>
+                <td>
+                    <form method="post" action="{% url 'my:toggle_word_visibility' word.id 'word' %}" class="toggle-visibility-form">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm b-color-blue toggle-visibility-button">
+                            {% if word.hide %}
+                                <img src="{% static 'img/not_show.svg' %}" alt="Скрыть">
+                            {% else %}
+                                <img src="{% static 'img/show.svg' %}" alt="Показать">
+                            {% endif %}
+                        </button>
+                    </form>
+                </td>
+                <td>
+                    <a href="{% url 'my:delete_word' word.id 'word' %}"><img src="{% static 'img/delete.svg' %}" alt="Видалити"></a>
+                </td>
+
+                {% endif %}
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">Нічого не знайдено.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+        <br>
+        <br>
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_words.has_previous %}
+                <a href="?page_words=1" class="btn btn-sm b-color-green-blue">&laquo; Перша</a>
+                <a href="?page_words={{ page_words.previous_page_number }}" class="btn btn-sm b-color-orange ">Попередня</a>
+            {% endif %}
+
+            <span class="current-page">
+                {{ page_words.number }} з {{ page_words.paginator.num_pages }}.
+            </span>
+
+            {% if page_words.has_next %}
+                <a href="?page_words={{ page_words.next_page_number }}" class="btn btn-sm b-color-orange ">Наступна</a>
+                <a href="?page_words={{ page_words.paginator.num_pages }}" class="btn btn-sm b-color-green-blue">Остання &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
 </div>
 
 
+
+<br>
+<br>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
+
+
 <script>
+$(document).ready(function() {
+    // Обработчик клика по кнопке изменения видимости
+    $('.toggle-visibility-form').submit(function(event) {
+        event.preventDefault(); // Предотвращаем отправку формы по умолчанию
+
+        var form = $(this);
+        var button = form.find('.toggle-visibility-button'); // Находим кнопку
+        var tr = form.closest('tr'); // Получаем родительскую строку
+        var descriptionTd = tr.find('.description-td'); // Находим ячейку с описанием
+
+        $.ajax({
+            type: form.attr('method'),
+            url: form.attr('action'),
+            data: form.serialize(),
+            success: function(response) {
+                if (response.hide) {
+                    descriptionTd.find('.short-description').show();
+                    descriptionTd.find('.full-description').hide();
+                    // Меняем изображение на not_show.svg
+                    button.find('img').attr('src', '{% static 'img/not_show.svg' %}');
+                } else {
+                    descriptionTd.find('.short-description').hide();
+                    descriptionTd.find('.full-description').show();
+                    // Меняем изображение на show.svg
+                    button.find('img').attr('src', '{% static 'img/show.svg' %}');
+                }
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                console.log(errorThrown);
+            }
+        });
+    });
+});
+
+
+
+    const copyLinkButtons = document.querySelectorAll('.copy-link-btn');
+
+    copyLinkButtons.forEach((button, index) => {
+        button.addEventListener('click', function() {
+            var playlistLinks = document.querySelectorAll('.playlist-link');
+            var playlistLink = playlistLinks[index];  // Отримуємо відповідне посилання на плейлист
+
+            var tempInput = document.createElement('input');
+            tempInput.value = window.location.origin + playlistLink.getAttribute('href');  // Отримуємо повний URL з посилання на плейлист
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+        });
+    });
+
+
+    const showMoreDescriptionLinks = document.querySelectorAll(".show-more-description");
+    showMoreDescriptionLinks.forEach((link) => {
+        link.addEventListener("click", (e) => {
+            e.preventDefault(); // Предотвращаем переход по ссылке
+            const parentTd = e.target.parentNode;
+            const shortDescription = parentTd.querySelector(".short-description");
+            const fullDescription = parentTd.querySelector(".full-description");
+            if (shortDescription.style.display === "none") {
+                shortDescription.style.display = "inline";
+                fullDescription.style.display = "none";
+                link.textContent = " ...";
+            } else {
+                shortDescription.style.display = "none";
+                fullDescription.style.display = "inline";
+                link.textContent = " ...";
+            }
+        });
+    });
+
+    // Окрашивание плейлистов
     var playlistItems = document.querySelectorAll('.playlist-item');
     var colors = ['#e0fff7', '#f7dfff', '#fff2cb'];  // Ваші доступні кольори
 
@@ -43,7 +280,24 @@
         var backgroundColor = colors[colorIndex];
         playlistItems[i].style.backgroundColor = backgroundColor;
     }
+
+
+        const deletePlaylistLinks = document.querySelectorAll('.delete-playlist');
+
+        deletePlaylistLinks.forEach(link => {
+            link.addEventListener('click', function(event) {
+                const playlistId = this.getAttribute('data-id');
+                const confirmation = confirm("Вы уверены, что хотите удалить плейлист?");
+                if (!confirmation) {
+                    event.preventDefault(); // Отменить действие по умолчанию, если пользователь не подтвердил удаление
+                } else {
+                    // Если пользователь подтвердил удаление, перейдите по ссылке для удаления плейлиста
+                    window.location.href = `{% url 'my:delete_playlist' 0 %}`.replace('0', playlistId);
+                }
+            });
+        });
 </script>
+
 {% endblock %}
 
 

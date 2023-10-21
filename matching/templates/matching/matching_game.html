@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="container mt-5 font-family-game ">
+    <h1 class="text-center">Зберіть речення</h1>
+    <div id="result-message-container" class="text-center result-message-container">
+        <p id="result-message"></p>
+    </div>
+
+    <div class="p-4 mx-auto my-border mb-5" id="sentence-container">
+        <!-- Здесь будет отображаться предложение -->
+    </div>
+    <div class="p-4 mx-auto my-border" id="words-container">
+
+    </div>
+    <div class="d-flex justify-content-between align-items-end mb-5">
+        <div class="button-container">
+            <button class="btn b-color-orange mt-5  d-inline-block" id="check-button">Перевірити</button>
+            <button type="button" class="btn b-color-green-blue mt-5 d-inline-block" id="refresh-button">Наступне</button>
+        </div>
+        <div class="button-container">
+            <form method="post" action="{% url 'matching:avoid_sentence' %}" class="d-inline-block">
+                {% csrf_token %}
+                <input type="hidden" name="sentences_id" value="{{ sentences_id.id }}">
+                <input type="hidden" name="user_id" value="{{ user.id }}">
+                <button type="submit" class="icon-button custom-tooltip">
+                    <img src="{% static 'img/done.svg' %}" alt="Вивчив">
+                    <span class="tooltip-text">Більше не показувати це речення, я його знаю.</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+  const sentence = "{{ random_sentence|default:'' }}";
+    const words = sentence.split(" ").sort(() => Math.random() - 0.5);
+    const sentenceContainer = document.getElementById("sentence-container");
+    const wordsContainer = document.getElementById("words-container");
+    const checkButton = document.getElementById("check-button");
+
+    // Очищаем контейнер с предложением
+    sentenceContainer.innerHTML = "";
+
+    // Выводим перемешанные слова
+    words.forEach((word) => {
+        const wordElement = document.createElement("span");
+        wordElement.textContent = word;
+        wordElement.className = "draggable text-center";
+        wordElement.addEventListener("click", () => {
+            if (wordElement.parentElement === wordsContainer) {
+                sentenceContainer.appendChild(wordElement);
+            } else {
+                wordsContainer.appendChild(wordElement);
+            }
+        });
+        wordsContainer.appendChild(wordElement);
+    });
+
+    // Проверяем, что слова упорядочены правильно
+    checkButton.addEventListener("click", () => {
+        const userSentence = Array.from(sentenceContainer.children).map((element) => element.textContent).join(" ");
+        const resultMessageContainer = document.getElementById("result-message-container");
+        const resultMessage = document.getElementById("result-message");
+
+        if (userSentence === sentence) {
+            resultMessageContainer.classList.remove("text-danger");
+            resultMessageContainer.classList.add("text-success");
+            resultMessage.textContent = "Правильно!";
+        } else {
+            resultMessageContainer.classList.remove("text-success");
+            resultMessageContainer.classList.add("text-danger");
+            resultMessage.textContent = "Неправильно. Спробуйте ще раз.";
+        }
+    });
+
+    document.getElementById('refresh-button').addEventListener('click', function () {
+        location.reload();
+    });
+</script>
+
+{% endblock %}

@@ -1,82 +1,112 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-5 font-family-game ">
     <h1 class="text-center">{{ playlist.title }}</h1>
 
     <div class="table-responsive">
+        <h3 class="page-title">Ваші слова</h3>
+            <hr>
         <table class="table mt-4">
             <thead>
                 <tr>
-                    <th>Слово</th>
+                    <th>Слово-Переклад</th>
                     <th>Опис</th>
-                    <th>Переклад</th>
                     <th>Видалити</th>
                 </tr>
             </thead>
             <tbody>
                 {% for item in playlist_items %}
                 <tr style="background-color: {{ item.row_color }}">
-                    <td>{{ item.word.word }}</td>
-                    <td>{{ item.word.description }}</td>
-                    <td>{{ item.word.translate }}</td>
+                    {% if item.word.id %}
+                    <td>{{ item.word.word }} - {{ item.word.translate }}</td>
+                    <td>
+                        <span class="short-description">{{ item.word.description|slice:":20" }}</span>
+                        <span class="full-description" style="display: none;">{{ item.word.description }}</span>
+                            <img class="show-more-description" src="{% static 'img/dots.svg' %}" alt="Вивчив">
+                    </td>
+
                     <td>
                         <form method="post" action="{% url 'my:remove_word_from_playlist' playlist.id item.word.id %}">
                             {% csrf_token %}
                             <button type="submit" class="btn b-color-red-orange">Видалити</button>
                         </form>
                     </td>
+                    {% endif %}
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="4">Плейлист порожній.</td>
+                    <td colspan="5">Плейлист порожній.</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        <div class="text-center mb-5">
+            <a href="{% url 'my:playlist_game' playlist.id 'base_game' %}" class="btn b-color-orange">Играть</a>
+        </div>
     </div>
 
-    <div class="mt-4 d-flex flex-wrap justify-content-center">
 
-        <a href="{% url 'my:create_playlist' %}" class="btn b-color-red mx-2 mb-2">Створіть новий плейлист</a>
-        <a href="{% url 'my:create_my_game' playlist.id %}" class="btn b-color-orange mx-2 mb-2">Грати з цим плейлистом</a>
-        <button id="copy-link-btn" class="btn b-color-green-blue mx-2 mb-2">Скопіювати посилання</button>
-        <button id="delete-playlist-btn" class="btn btn-danger mx-2 mb-2">Видалити плейлист</button>
+    <div class="table-responsive">
+        <h3 class="page-title">Ваші речення</h3>
+        <hr>
+        <table class="table mt-4">
+            <thead>
+                <tr>
+                    <th>Речення</th>
+                    <th>Видалити</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in playlist_items %}
+                    <tr style="background-color: {{ item.row_color }}">
+                        {% if item.sentence.id %}
+                        <td>{{ item.sentence.text }}</td>
+                        <td>
+                                <form method="post" action="{% url 'my:remove_sentence_from_playlist' playlist.id item.sentence.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn b-color-red-orange">Видалити</button>
+                                </form>
+                        </td>
+                        {% endif %}
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="2">Плейлист порожній.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+            <div class="text-center">
+                <a href="{% url 'my:playlist_game' playlist.id 'matching' %}" class="btn b-color-orange">Играть</a>
+            </div>
     </div>
+
 
 </div>
 
 <script>
-    document.getElementById('copy-link-btn').addEventListener('click', function() {
-        // Створюємо тимчасовий інпут для копіювання
-        var tempInput = document.createElement('input');
 
-        // Встановлюємо значення в середині тимчасового інпута
-        tempInput.value = "{{ request.build_absolute_uri }}";
-
-        // Додаємо тимчасовий інпут на сторінку (не видимий)
-        document.body.appendChild(tempInput);
-
-        // Вибираємо текст всередині елемента
-        tempInput.select();
-
-        // Копіюємо текст у буфер обміну
-        document.execCommand('copy');
-
-        // Видаляємо тимчасовий інпут
-        document.body.removeChild(tempInput);
-
-        // Змінюємо текст кнопки на "Скопійовано!"
-        this.textContent = 'Скопійовано!';
+        const showMoreDescriptionLinks = document.querySelectorAll(".show-more-description");
+    showMoreDescriptionLinks.forEach((link) => {
+        link.addEventListener("click", (e) => {
+            e.preventDefault(); // Предотвращаем переход по ссылке
+            const parentTd = e.target.parentNode;
+            const shortDescription = parentTd.querySelector(".short-description");
+            const fullDescription = parentTd.querySelector(".full-description");
+            if (shortDescription.style.display === "none") {
+                shortDescription.style.display = "inline";
+                fullDescription.style.display = "none";
+                link.textContent = " ...";
+            } else {
+                shortDescription.style.display = "none";
+                fullDescription.style.display = "inline";
+                link.textContent = " ...";
+            }
+        });
     });
-
-
-    document.getElementById('delete-playlist-btn').addEventListener('click', function() {
-        if (confirm('Ви впевнені, що хочете видалити цей плейлист і всі пов\'язані слова?')) {
-            window.location.href = "{% url 'my:delete_playlist' playlist.id %}";
-        }
-    });
-
 
 </script>
 {% endblock %}

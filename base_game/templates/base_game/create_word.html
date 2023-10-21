@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+{% load static %}
 
 {% block content %}
 <div class="container mt-5 font-family-game">
@@ -42,6 +43,14 @@
                 <label for="level">Рівень</label>
                 {{ form.level }}
               </div>
+               <br>
+
+               <div class="form-group custom-tooltip">
+                    <label for="hide">Приховати</label>
+                    {{ form.hide }}
+                   <span class="tooltip-text">Приховати це слово від інших користувачів. Воно буде доступно тільки вам.</span>
+               </div>
+               <br>
               <div class="form-group mt-3">
                 <button type="submit" class="btn b-color-orange btn-lg">Створити</button>
               </div>

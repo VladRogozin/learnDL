@@ -30,6 +30,15 @@
                     <button type="button" class="btn b-color-green-blue mt-2 " id="refresh-button">Наступне</button>
                     <a href="{% url 'artikel:artikel_info' %}" class="btn mt-2 b-color-red align-self-start">Нагадати артиклі</a>
                 </form>
+                <form method="post" action="{% url 'artikel:avoid_article' %}" class="left-probel pb-2"> <!-- Добавлен инлайн-стиль для отступа справа -->
+                    {% csrf_token %}
+                    <input type="hidden" name="word_id" value="{{ word.id }}">
+                    <input type="hidden" name="user_id" value="{{ user.id }}">
+                    <button type="submit" class="icon-button custom-tooltip">
+                        <img src="{% static 'img/done.svg' %}" alt="Вивчив">
+                        <span class="tooltip-text">Більше не показувати це слово, я його знаю.</span>
+                    </button>
+                </form>
             </div>
         </div>
         <div class="col-12 col-md-6 mt-5">
@@ -104,3 +113,15 @@
     </script>
 {% endblock %}
 
+
+
+<!--        var artikelImages = {-->
+<!--            'ein': '{% static "img/artikel/ein.png" %}',-->
+<!--            'eine': '{% static "img/artikel/eine.png" %}',-->
+<!--            'den': '{% static "img/artikel/den.png" %}',-->
+<!--            'der': '{% static "img/artikel/der.png" %}',-->
+<!--            'das': '{% static "img/artikel/das.png" %}',-->
+<!--            'dem': '{% static "img/artikel/dem.png" %}',-->
+<!--            'des': '{% static "img/artikel/des.png" %}',-->
+<!--            'die': '{% static "img/artikel/die.png" %}',-->
+<!--        };-->

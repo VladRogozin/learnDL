@@ -1,28 +1,33 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block content %}
+<div class="container font-family-game mt-5 mb-5">
 <h1 class="page-title">Результати пошуку</h1>
 
 <table class="table table-striped-columns table-hover  ">
     <thead>
         <tr class="table-info">
-            <th>Слово</th>
+            <th>Слово - Переклад</th>
             <th>Опис</th>
-            <th>Переклад</th>
             {% if user.is_authenticated %}
             <th>Дії</th>
             {% endif %}
         </tr>
     </thead>
     <tbody>
-        {% for word in words %}
+        {% for word in page %}
         <tr class="">
-            <td>{{ word.word }}</td>
-            <td>{{ word.description }}</td>
-            <td>{{ word.translate }}</td>
+            <td>{{ word.word }} - {{ word.translate }}</td>
+            <td>
+                <span class="short-description">{{ word.description|slice:":20" }}</span>
+                <span class="full-description" style="display: none;">{{ word.description }}</span>
+                    <img class="show-more-description" src="{% static 'img/dots.svg' %}" alt="Вивчив">
+            </td>
             {% if user.is_authenticated %}
             <td>
-                <form method="POST" action="{% url 'my:create_words' %}">
+                <form method="POST" action="{% url 'my:add_to_playlist' %}">
                     {% csrf_token %}
                     <input type="hidden" name="word_id" value="{{ word.id }}">
                     <div class="form-group mb-2">
@@ -47,7 +52,45 @@
         {% endfor %}
     </tbody>
 </table>
+<div class="pagination">
+    <span class="step-links">
+        {% if page.has_previous %}
+            <a href="?page=1" class="btn btn-sm b-color-green-blue">&laquo; Перша</a>
+            <a href="?page={{ page.previous_page_number }}" class="btn btn-sm b-color-orange ">Попередня</a>
+        {% endif %}
+
+        <span class="current-page">
+            {{ page.number }} з {{ page.paginator.num_pages }}.
+        </span>
+
+        {% if page.has_next %}
+            <a href="?page={{ page.next_page_number }}" class="btn btn-sm b-color-orange ">Наступна</a>
+            <a href="?page={{ page.paginator.num_pages }}" class="btn btn-sm b-color-green-blue">Остання &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+</div>
 
 
-<a href="{% url 'base_view' %}">Повернутися на головну</a>
+<script>
+const showMoreDescriptionLinks = document.querySelectorAll(".show-more-description");
+showMoreDescriptionLinks.forEach((link) => {
+    link.addEventListener("click", (e) => {
+        e.preventDefault(); // Предотвращаем переход по ссылке
+        const parentTd = e.target.parentNode;
+        const shortDescription = parentTd.querySelector(".short-description");
+        const fullDescription = parentTd.querySelector(".full-description");
+        if (shortDescription.style.display === "none") {
+            shortDescription.style.display = "inline";
+            fullDescription.style.display = "none";
+            link.textContent = " ...";
+        } else {
+            shortDescription.style.display = "none";
+            fullDescription.style.display = "inline";
+            link.textContent = " ...";
+        }
+    });
+});
+</script>
+
 {% endblock %}

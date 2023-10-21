@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<h1 class="page-title">Ваші слова</h1>
+
+<table class="table table-striped-columns table-hover  ">
+    <thead>
+        <tr class="table-info">
+            <th>Слово</th>
+            <th>Опис</th>
+            <th>Переклад</th>
+            {% if user.is_authenticated %}
+            <th>Дії</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for word in words %}
+        <tr class="">
+            <td>{{ word.word }}</td>
+            <td>{{ word.description }}</td>
+            <td>{{ word.translate }}</td>
+            {% if user.is_authenticated %}
+            <td>
+                <form method="POST" action="{% url 'my:create_words' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="word_id" value="{{ word.id }}">
+                    <div class="form-group mb-2">
+                        <label for="playlist">Виберіть плейлист:</label>
+                        <select id="playlist" name="playlist" class="form-control form-control-sm">
+                            {% for playlist in user_playlists %}
+                            <option value="{{ playlist.id }}">{{ playlist.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-sm b-color-red">Додати в плейлист</button>
+                </form>
+            </td>
+
+
+            {% endif %}
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">Нічого не знайдено.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+<a href="{% url 'base_view' %}">Повернутися на головну</a>
+
+{% endblock %}
+

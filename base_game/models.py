@@ -17,7 +17,8 @@ class BaseGameModel(models.Model):
     translate = models.CharField(max_length=200)
     autor = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     level = models.CharField(max_length=2, choices=LEVEL_CHOICES, default='A1')
-
+    hide = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class WordComplaint(models.Model):
@@ -29,3 +30,6 @@ class WordComplaint(models.Model):
         return f"Жалоба от {self.user.username} на слово '{self.word.word}'"
 
 
+class AvoidedWord(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    word = models.ManyToManyField(BaseGameModel)

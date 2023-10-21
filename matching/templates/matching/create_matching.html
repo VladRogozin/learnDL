@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="container mt-5 font-family-game">
+    <div class="row">
+        <div class="col-md-12 ">
+            <!-- Текст предупреждения -->
+            <div class="alert alert-warning text-center" role="alert">
+                    Ми віримо в силу спільноти і сподіваємося, що кожен із вас зробить наш ресурс кращим. Пам'ятайте, що ваш внесок цінний, і ваша допомога у створенні якісного контенту для всіх користувачів дуже важлива. Дякуємо вам за дотримання цих правил і за вашу участь у нашому проєкті!            </div>
+            <!-- Кнопка с выпадающим меню -->
+            <div class="dropdown my-dropdown-right">
+                <button class="btn b-color-green-blue dropdown-toggle " type="button" id="instructionsDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Інструкції до створення
+                </button>
+                <div class="dropdown-menu my-dropdown-menu-center" aria-labelledby="instructionsDropdown">
+                    <ul class="list-group">
+                        <li class="list-group-item my-color-rule">
+                            Точність і чіткість: Будь ласка, описуйте слова ясно і точно. Це допоможе іншим користувачам зрозуміти їхні значення та використання. Слово й опис мають бути німецькою мовою                        </li>
+                        <li class="list-group-item my-color-rule">
+                                Не зловживайте описами: Ми вітаємо креативні та оригінальні описи, але прошу вас не додавати ненадійну або образливу інформацію. Пам'ятайте, що ваш внесок має бути інформативним і безпечним для всіх.                        </li>
+                            </ul>
+                </div>
+            </div>
+
+
+           <form method="post">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="text">Слово</label>
+                <input type="text" class="form-control" id="text" name="text">
+              </div>
+              <div class="form-group">
+                <label for="level">Рівень</label>
+                {{ form.level }}
+              </div>
+               <br>
+               <div class="form-group custom-tooltip">
+                    <label for="hide">Приховати</label>
+                    {{ form.hide }}
+                   <span class="tooltip-text">Приховати це слово від інших користувачів. Воно буде доступно тільки вам.</span>
+               </div>
+               <br>
+              <div class="form-group mt-3">
+                <button type="submit" class="btn b-color-orange btn-lg">Створити</button>
+              </div>
+            </form>
+            {% if errors %}
+                <div class="alert alert-danger mt-3">
+                    <ul>
+                        {% for error in errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

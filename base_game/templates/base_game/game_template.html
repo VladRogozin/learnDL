@@ -4,8 +4,9 @@
 
 {% block content %}
 <div class="container mt-5 mb-5 font-family-game">
-    <h1 class="word-title" title="{{ word.translate }}">
+    <h1 class="word-title custom-tooltip">
         {{ word.word }}
+        <span class="tooltip-text">{{ word.translate }}</span>
     </h1>
 
     <div id="result-message-container" class="text-center result-message-container">
@@ -28,13 +29,26 @@
             <button type="button" class="btn b-color-green-blue" id="refresh-button">Наступне</button>
         </form>
 
-        <form id="complaint-form" method="post" action="{% url 'words:complain_word' word.id %}" class="mt-3">
-            {% csrf_token %}
-            {{ complaint_form.as_p }}
-            <button type="submit" class="icon-button" title="Поскаржитися на дане слово або опис!">
-                <img src="{% static 'img/complaint.svg' %}" alt="Поскаржитися">
-            </button>
-        </form>
+        <div class="horizontal-buttons d-flex">
+            <form method="post" action="{% url 'words:avoid_word' %}" class="left-probel"> <!-- Добавлен инлайн-стиль для отступа справа -->
+                {% csrf_token %}
+                <input type="hidden" name="word_id" value="{{ word.id }}">
+                <input type="hidden" name="user_id" value="{{ user.id }}">
+                <button type="submit" class="icon-button custom-tooltip">
+                    <img src="{% static 'img/done.svg' %}" alt="Вивчив">
+                    <span class="tooltip-text">Більше не показувати це слово, я його знаю.</span>
+                </button>
+            </form>
+
+            <form id="complaint-form" method="post" action="{% url 'words:complain_word' word.id %}" class="">
+                {% csrf_token %}
+                {{ complaint_form.as_p }}
+                <button type="submit" class="icon-button custom-tooltip">
+                    <img src="{% static 'img/complaint.svg' %}" alt="Поскаржитися">
+                    <span class="tooltip-text">Поскаржитися на дане слово або опис!</span>
+                </button>
+            </form>
+        </div>
     </div>
 </div>
 

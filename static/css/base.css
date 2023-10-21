@@ -78,6 +78,9 @@ a {
     .my-title-h1 {
         font-size: 15px; /* Уменьшаем размер шрифта для мобильных устройств */
     }
+    .small-size {
+        font-size: 11px;
+    }
 }
 
 
@@ -140,6 +143,90 @@ a {
     display: none;
 }
 
+.left-probel {
+    margin-right: 10px;
+}
+
+.show-more-description {
+    cursor: pointer;
+}
+
+.playlist-container {
+    max-height: 300px; /* Установите желаемую максимальную высоту контейнера */
+    overflow-y: auto;
+}
+.new-line-anyway {
+    max-width: 100%; /* Установите максимальную ширину по вашему усмотрению */
+    word-wrap: break-word; /* Добавьте перенос слов для длинного текста */
+}
+
+
+.btn-very-small {
+    width: 70px; /* Ширина */
+    height: 30px; /* Высота */
+    font-size: 13px; /* Размер шрифта */
+}
+
+
+
+/* Гра на спиввидношеня слив */
+.draggable {
+    font-size: 20px;
+    display: inline-block;
+    padding: 5px;
+    margin: 5px;
+    background-color: rgba(187, 200, 251, 0.5);
+    border: 1px solid #092387;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, border 0.3s; /* Плавный переход для background-color и border */
+}
+
+.draggable:hover {
+    background-color: rgba(230, 253, 224, 0.5);
+    border: 1px solid #31be0c;
+}
+
+
+.my-border {
+    background-color: rgba(	254, 252, 242, 0.5);
+    border: 2px solid #fdf8e0;
+    border-radius: 10px;
+}
+
+
+
+
+.custom-tooltip {
+    position: relative;
+    cursor: pointer;
+    z-index: 1; /* Устанавливаем значение z-index, чтобы подсказка была выше других элементов */
+}
+
+.custom-tooltip .tooltip-text {
+    visibility: hidden;
+    background-color: #ebeffe;
+    color: #010411;
+    text-align: center;
+    border: 2px solid #0b38df;
+    border-radius: 5px;
+    padding: 5px;
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.6s;
+    z-index: 2; /* Устанавливаем значение z-index для подсказки, чтобы она была выше .custom-tooltip */
+}
+
+.custom-tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+    z-index: 3; /* Устанавливаем значение z-index для подсказки в состоянии hover */
+}
+
+
 
 
 
@@ -156,6 +243,8 @@ a {
 .b-color-red:hover {
     background-color: #a5007d; /* Изменение цвета при наведении */
     color: #fff4fc;
+    border: 2px solid #ffb9ee;
+    border-radius: 5px;
 }
 
 
@@ -167,6 +256,8 @@ a {
 .b-color-orange:hover {
     background-color: #ffc107; /* Изменение цвета при наведении */
     color: black;
+    border: 2px solid #ffe490;
+    border-radius: 5px;
 }
 
 .b-color-red-orange {
@@ -176,6 +267,8 @@ a {
 .b-color-red-orange:hover {
     background-color: #f33a00;
     color: #fff4fc;
+    border: 2px solid #ffc9b8;
+    border-radius: 5px;
 }
 
 .b-color-green-blue {
@@ -184,4 +277,7 @@ a {
 
 .b-color-green-blue:hover {
     background-color: #00a588;
+    border: 2px solid #ccfff6;
+    border-radius: 5px;
 }
+
