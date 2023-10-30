@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<div class="container mt-5 font-family-game ">
+<div class="container mt-5 font-family-game base-container">
     <h1 class="text-center">Зберіть речення</h1>
     <div id="result-message-container" class="text-center result-message-container">
         <p id="result-message"></p>
@@ -31,6 +31,10 @@
                     <span class="tooltip-text">Більше не показувати це речення, я його знаю.</span>
                 </button>
             </form>
+            <button type="submit" class="icon-button custom-tooltip">
+                <p>Переклад</p>
+                <span class="tooltip-text">{{ sentences_id.translate }}</span>
+            </button>
         </div>
     </div>
 </div>

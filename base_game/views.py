@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import BaseGameForms, WordComplaintForm, AvoidedWordForm
 from django.contrib.auth.models import User
@@ -7,9 +8,11 @@ from django.core.paginator import Paginator
 from django.shortcuts import render
 from .models import BaseGameModel, WordComplaint, AvoidedWord
 from random import sample
+import random
 from accounts.models import Playlist
 from django.db.models import Q
 
+from accounts.models import Pages
 
 
 @login_required
@@ -46,11 +49,12 @@ def game(request):
     # Получить доступные слова, где hide=False
     available_words = BaseGameModel.objects.filter(hide=False)
 
-    # Получить предложения, которые нужно исключить из игры
-    avoided_words = AvoidedWord.objects.filter(user=request.user).values('word')
+    if request.user.is_authenticated:
+        # Получить предложения, которые нужно исключить из игры
+        avoided_words = AvoidedWord.objects.filter(user=request.user).values('word')
 
-    # Исключить предложения, которые содержатся в таблице AvoidedSentence
-    available_words = available_words.exclude(pk__in=avoided_words)
+        # Исключить предложения, которые содержатся в таблице AvoidedSentence
+        available_words = available_words.exclude(pk__in=avoided_words)
 
     word = None
     options = []
@@ -64,27 +68,44 @@ def game(request):
     return render(request, 'base_game/game_template.html', {'word': word, 'options': options})
 
 
+def new_game(request):
+    return render(request, 'base_game/new_game.html', )
+
+
+def new_game_new(request, playlist):
+    descriptions_2 = BaseGameModel.objects.filter(playlistitem__playlist=playlist)
+    available_words = descriptions_2.values('word', 'description', 'translate')
+    available_words = list(available_words)
+    return JsonResponse(available_words, safe=False)
+
+
 def search_words(request):
     query = request.GET.get('q')
+
+    word_results = playlists_results = pages_results = []
+
     if query:
-        words = BaseGameModel.objects.filter(Q(word__icontains=query) & Q(hide=False))
-    else:
-        words = []
+        # Ищем слова в первом приложении
+        word_results = BaseGameModel.objects.filter(Q(word__icontains=query) & Q(hide=False))
 
-    # Инициализируйте пагинатор, указав количество элементов на странице
-    paginator = Paginator(words, 10)  # В данном случае по 10 элементов на странице
+        # Ищем плейлисты во втором приложении
+        playlists_results = Playlist.objects.filter(Q(title__icontains=query))
 
-    # Получите номер текущей страницы из запроса GET
-    page_number = request.GET.get('page')
+        # Ищем страницы в третьем приложении
+        pages_results = Pages.objects.filter(Q(title__icontains=query))
 
-    # Получите объект Page для текущей страницы
-    page = paginator.get_page(page_number)
+    user_playlists = None
 
-    user_playlists = []
-    if request.user.is_authenticated:
-        user_playlists = Playlist.objects.filter(user=request.user)
+    if word_results:
+        if request.user.is_authenticated:
+            user_playlists = Playlist.objects.filter(user=request.user)
 
-    return render(request, 'base_game/search.html', {'page': page, 'user_playlists': user_playlists})
+    return render(request, 'base_game/search.html', {
+        'word_results': word_results,
+        'user_playlists': user_playlists,
+        'playlists_results': playlists_results,
+        'pages_results': pages_results,
+    })
 
 
 def complain_word(request, word_id):

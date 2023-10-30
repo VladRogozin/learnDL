@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 import random
 
@@ -10,9 +11,10 @@ from .models import Sentence, AvoidedSentence
 def matching_game(request):
     sentences = Sentence.objects.filter(hide=False)
 
-    avoided_sentences = AvoidedSentence.objects.filter(user=request.user).values('sentences')
+    if request.user.is_authenticated:
+        avoided_sentences = AvoidedSentence.objects.filter(user=request.user).values('sentences')
 
-    sentences = sentences.exclude(pk__in=avoided_sentences)
+        sentences = sentences.exclude(pk__in=avoided_sentences)
 
 
     random_sentence = None
@@ -23,14 +25,13 @@ def matching_game(request):
         random_sentence = random_sentence.text
 
     context = {'random_sentence': random_sentence, 'sentences_id': sentences_id,}
-    print(random_sentence)
     return render(request, 'matching/matching_game.html', context)
 
 
 @login_required
 def create_sentence(request):
     if request.method == 'POST':
-        form = SentenceForm(request.POST)
+        form = SentenceForm(request.POST, request.FILES)
         if form.is_valid():
             sentence = form.save(commit=False)
             sentence.autor = request.user  # Привязать автора к пользователю
@@ -60,3 +61,12 @@ def avoid_sentence(request):
     return render(request, 'base_game/search.html', {'form': form})
 
 
+def new_sentences_game(request):
+    return render(request, 'matching/new_sentences_game.html', )
+
+
+def new_sentences_game_new(request, playlist):
+    descriptions = Sentence.objects.filter(playlistitem__playlist=playlist).values('text', 'translate', 'helpText', 'photo',)
+    phrases = list(descriptions)
+
+    return JsonResponse({'phrases': phrases}, safe=False)

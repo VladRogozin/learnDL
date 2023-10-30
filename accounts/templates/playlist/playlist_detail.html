@@ -3,18 +3,23 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-5 font-family-game ">
-    <h1 class="text-center">{{ playlist.title }}</h1>
+<div class="container mt-5 font-family-game base-container">
+    <div class="row text-center">
+        <h1 class="text-center title-page">{{ playlist.title }}</h1><hr>
+    </div>
 
-    <div class="table-responsive">
-        <h3 class="page-title">Ваші слова</h3>
-            <hr>
+    <p class="description-playlist">{{ playlist.description }}</p>
+
+    <div class="table-responsive" id="words-table">
+        <h3 class="page-title-list  text-center">Словар <img src="{% static 'img/dir.png' %}" alt="Вивчив" style="width: 40px;"></h3>
         <table class="table mt-4">
             <thead>
                 <tr>
                     <th>Слово-Переклад</th>
                     <th>Опис</th>
+                    {% if playlist.user == request.user %}
                     <th>Видалити</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -27,7 +32,7 @@
                         <span class="full-description" style="display: none;">{{ item.word.description }}</span>
                             <img class="show-more-description" src="{% static 'img/dots.svg' %}" alt="Вивчив">
                     </td>
-
+                    {% if playlist.user == request.user %}
                     <td>
                         <form method="post" action="{% url 'my:remove_word_from_playlist' playlist.id item.word.id %}">
                             {% csrf_token %}
@@ -35,10 +40,7 @@
                         </form>
                     </td>
                     {% endif %}
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5">Плейлист порожній.</td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>
@@ -49,14 +51,16 @@
     </div>
 
 
-    <div class="table-responsive">
-        <h3 class="page-title">Ваші речення</h3>
-        <hr>
+    <div class="table-responsive" id="sentences-table">
+        <h3 class="page-title-list text-center ">Збери речення<img src="{% static 'img/colect.png' %}" alt="Вивчив" style="width: 40px;"></h3>
+
         <table class="table mt-4">
             <thead>
                 <tr>
                     <th>Речення</th>
+                    {% if playlist.user == request.user %}
                     <th>Видалити</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -64,6 +68,7 @@
                     <tr style="background-color: {{ item.row_color }}">
                         {% if item.sentence.id %}
                         <td>{{ item.sentence.text }}</td>
+                        {% if playlist.user == request.user %}
                         <td>
                                 <form method="post" action="{% url 'my:remove_sentence_from_playlist' playlist.id item.sentence.id %}">
                                     {% csrf_token %}
@@ -71,23 +76,43 @@
                                 </form>
                         </td>
                         {% endif %}
-                    </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="2">Плейлист порожній.</td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
+
             <div class="text-center">
                 <a href="{% url 'my:playlist_game' playlist.id 'matching' %}" class="btn b-color-orange">Играть</a>
             </div>
     </div>
 
+    <div id="empty-playlist-message" style="display: none;">
+        <p>Плейлист порожній.</p>
+    </div>
 
 </div>
 
 <script>
+
+const wordsTable = document.getElementById("words-table");
+const sentencesTable = document.getElementById("sentences-table");
+const emptyPlaylistMessage = document.getElementById("empty-playlist-message");
+
+// Проверяем, есть ли элементы в таблицах
+const wordsTableRows = wordsTable.getElementsByTagName("td");
+const sentencesTableRows = sentencesTable.getElementsByTagName("td");
+
+
+if (wordsTableRows.length <= 0) {
+    wordsTable.style.display = "none";
+}
+
+if (sentencesTableRows.length <= 0) {
+    sentencesTable.style.display = "none";
+}
+
+
 
         const showMoreDescriptionLinks = document.querySelectorAll(".show-more-description");
     showMoreDescriptionLinks.forEach((link) => {

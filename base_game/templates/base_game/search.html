@@ -3,94 +3,127 @@
 {% load static %}
 
 {% block content %}
-<div class="container font-family-game mt-5 mb-5">
-<h1 class="page-title">Результати пошуку</h1>
+<div class="container mt-5">
+        <div class="row">
+                    <h1 class="title-header-page">Плейлисти</h1>
+        </div>
 
-<table class="table table-striped-columns table-hover  ">
-    <thead>
-        <tr class="table-info">
-            <th>Слово - Переклад</th>
-            <th>Опис</th>
-            {% if user.is_authenticated %}
-            <th>Дії</th>
-            {% endif %}
-        </tr>
-    </thead>
-    <tbody>
-        {% for word in page %}
-        <tr class="">
-            <td>{{ word.word }} - {{ word.translate }}</td>
-            <td>
-                <span class="short-description">{{ word.description|slice:":20" }}</span>
-                <span class="full-description" style="display: none;">{{ word.description }}</span>
-                    <img class="show-more-description" src="{% static 'img/dots.svg' %}" alt="Вивчив">
-            </td>
-            {% if user.is_authenticated %}
-            <td>
-                <form method="POST" action="{% url 'my:add_to_playlist' %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="word_id" value="{{ word.id }}">
-                    <div class="form-group mb-2">
-                        <label for="playlist">Виберіть плейлист:</label>
-                        <select id="playlist" name="playlist" class="form-control form-control-sm">
-                            {% for playlist in user_playlists %}
-                            <option value="{{ playlist.id }}">{{ playlist.title }}</option>
-                            {% endfor %}
-                        </select>
+        <div class="row">
+        {% for playlist in playlists_results %}
+                <div class="col-md-4 mb-4" style="width: 20rem;">
+                    <div class="card {% cycle 'card-pastel-1' 'card-pastel-2' 'card-pastel-3' 'card-pastel-4' 'card-pastel-5' %}">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">{{ playlist.title }}</h5>
+                            <p class="card-text">{{ playlist.description }}</p>
+
+                            <div class="buttons-container">
+                                    <a href="{% url 'my:playlist_detail' playlist.id %}" class="btn b-card-pastel">{{ playlist.title }}</a>
+                                <a class="btn-copy-link link-button-page" data-link="{{ request.get_host }}{% url 'my:playlist_detail' playlist.id %}">
+                                    <img src="{% static 'img/link.svg' %}" alt="Видалити">
+                                </a>
+
+
+                            </div>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-sm b-color-red">Додати в плейлист</button>
-                </form>
-            </td>
-
-
-            {% endif %}
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="3">Нічого не знайдено.</td>
-        </tr>
+                </div>
         {% endfor %}
-    </tbody>
-</table>
-<div class="pagination">
-    <span class="step-links">
-        {% if page.has_previous %}
-            <a href="?page=1" class="btn btn-sm b-color-green-blue">&laquo; Перша</a>
-            <a href="?page={{ page.previous_page_number }}" class="btn btn-sm b-color-orange ">Попередня</a>
-        {% endif %}
+        </div>
 
-        <span class="current-page">
-            {{ page.number }} з {{ page.paginator.num_pages }}.
-        </span>
 
-        {% if page.has_next %}
-            <a href="?page={{ page.next_page_number }}" class="btn btn-sm b-color-orange ">Наступна</a>
-            <a href="?page={{ page.paginator.num_pages }}" class="btn btn-sm b-color-green-blue">Остання &raquo;</a>
-        {% endif %}
-    </span>
-</div>
+        <div class="row">
+            <h1 class="title-header-page">Уроки</h1>
+        </div>
+        <div class="row">
+            {% for page in pages_results %}
+                <div class="col-md-4 mb-4" style="width: 20rem;">
+                    <div class="card {% cycle 'card-pastel-5' 'card-pastel-2' 'card-pastel-3' 'card-pastel-4' 'card-pastel-1' %}">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">{{ page.title }}</h5>
+                            <p class="card-text">{{ page.description }}</p>
+
+                            <div class="buttons-container">
+                                <a href="{% url 'my:view_page' page.id %}" class="btn b-card-pastel">Вивчати</a>
+
+                                {% if user.is_authenticated %}
+                                    {% if user != page.user %}
+                                        <a href="{% url 'my:save_page' page.id %}" class="save-button-page"><img src="{% static 'img/save.svg' %}" alt="зберегти" ></a>
+                                    {% endif %}
+                                {% endif %}
+
+                                <a class="btn-copy-link link-button-page" data-link="{{ request.get_host }}{% url 'my:view_page' page.id %}">
+                                    <img src="{% static 'img/link.svg' %}" alt="копиювати">
+                                </a>
+
+                                {% if user.is_authenticated and user == page.user %}
+                                    <a data-page-id="{{ page.id }}" class="delete-button-page"><img src="{% static 'img/delete.svg' %}" alt="Видалити" ></a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+
+
+        <div class="row">
+            <h1 class="title-header-page">Слова</h1>
+        </div>
+        <div class="row">
+        {% for word in word_results %}
+            <div class="col-md-4 mb-4" style="width: 20rem;">
+                <div class="card {% cycle 'card-pastel-5' 'card-pastel-2' 'card-pastel-3' 'card-pastel-4' 'card-pastel-1' %}">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <h5 class="card-title text-center">{{ word.title }}</h5>
+                        <p class="card-text">{{ word.translate }}</p>
+
+                        {% if user.is_authenticated %}
+                            <form method="POST" action="{% url 'my:add_to_playlist' %}" class="text-center">
+                                {% csrf_token %}
+                                <input type="hidden" name="word_id" value="{{ word.id }}">
+                                <div class="form-group mb-2 ">
+                                    <select id="playlist" name="playlist" class="form-control form-control-sm chose-select">
+                                        {% for playlist in user_playlists %}
+                                        <option value="{{ playlist.id }}">{{ playlist.title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-very-small b-color-red">Додати</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        {% endfor %}
+        </div>
+
+
 </div>
 
 
 <script>
-const showMoreDescriptionLinks = document.querySelectorAll(".show-more-description");
-showMoreDescriptionLinks.forEach((link) => {
-    link.addEventListener("click", (e) => {
-        e.preventDefault(); // Предотвращаем переход по ссылке
-        const parentTd = e.target.parentNode;
-        const shortDescription = parentTd.querySelector(".short-description");
-        const fullDescription = parentTd.querySelector(".full-description");
-        if (shortDescription.style.display === "none") {
-            shortDescription.style.display = "inline";
-            fullDescription.style.display = "none";
-            link.textContent = " ...";
-        } else {
-            shortDescription.style.display = "none";
-            fullDescription.style.display = "inline";
-            link.textContent = " ...";
-        }
-    });
-});
+        const copyButtons = document.querySelectorAll(".btn-copy-link");
+            copyButtons.forEach(button => {
+                button.addEventListener("click", function() {
+                    const linkToCopy = button.getAttribute("data-link");
+                    const tempInput = document.createElement("input");
+                    document.body.appendChild(tempInput);
+                    tempInput.setAttribute("value", linkToCopy);
+                    tempInput.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(tempInput);
+
+                    const statusMessage = document.getElementById("status-message");
+                    statusMessage.innerHTML = "Посилання скопійовано!";
+                    statusMessage.style.display = "block";
+
+                    setTimeout(function() {
+                        statusMessage.style.display = "none";
+                    }, 3000);
+                });
+            });
 </script>
 
 {% endblock %}

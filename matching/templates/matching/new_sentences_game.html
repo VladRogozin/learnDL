@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="container mt-2 base-container">
+
+    <div class="" id="help__box">
+        <div class="row">
+            <div class="col-md-8 d-flex justify-content-center align-items-center ">
+                <img id="photo" src="" class="img-fluid img-sentence-game">
+            </div>
+            <div class="col-md-4 img-sentence-hellp d-flex justify-content-center align-items-center hellp-container-in-game">
+                <div class="message-container">
+                    <hr>
+                    <p id="help-message" class="help-message">
+                        <!-- Ваш текст сообщения здесь -->
+                    </p>
+                    <hr>
+                </div>
+            </div>
+        </div>
+    </div>
+<hr>
+
+<div class="font-family-game mx-auto" id="content__box">
+    <div class="pt-3 pb-3  mx-auto my-border mb-3 text-center" id="sentence-container">
+        <!-- Здесь будет отображаться предложение -->
+    </div>
+
+    <div class="pt-3 pb-3  mx-auto my-border text-center" id="words-container">
+        <!-- Здесь будут слова -->
+    </div>
+    <div id="result-message-container" class="text-center result-message-container">
+            <p id="result-message"></p>
+    </div>
+    <div class="d-flex justify-content-between align-items-end mb-5 text-center">
+        <div class="button-container">
+            <button class="btn b-color-orange mt-5 d-inline-block" id="check-button">Перевірити</button>
+            <button type="button" class="btn b-color-green-blue mt-5 d-inline-block" id="refresh-button">Наступне</button>
+        </div>
+        <div class="button-container">
+            <button type="submit" class="icon-button custom-tooltip">
+                <img src="{% static 'img/translate.png' %}" alt="Скрыть">
+                <span id="translate" class="tooltip-text">{{ sentences_id.translate }}</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+    <div id="play-again-buttons" class="play-again-buttons" style="display: none;">
+        <div id="centered-container">
+            <h1>Найважче позаду, найголовніше попереду!</h1>
+            <img src="{% static 'img/finish.png' %}" alt="Скрыть">
+        </div>
+        <button id="back-button" class="btn b-color-red-orange">Вернуться назад</button>
+        <button id="play-again-button" class="btn b-color-green-blue">Играть еще раз</button>
+    </div>
+
+</div>
+
+<script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+var playlist = {{ playlist_id }}
+// Объявляем переменные
+const sentenceContainer = document.getElementById("sentence-container");
+const wordsContainer = document.getElementById("words-container");
+const checkButton = document.getElementById("check-button");
+const refreshButton = document.getElementById("refresh-button");
+const translateElement = document.getElementById('translate');
+const helpTextElement = document.getElementById('help-message');
+const photoElement = document.getElementById('photo');
+const photoGameElement = document.getElementById('hellp-container-in-game');
+
+const playAgainButtons = document.getElementById("play-again-buttons");
+const backButton = document.getElementById("back-button");
+const playAgainButton = document.getElementById("play-again-button");
+
+// Массив для хранения загруженных фраз
+let availablePhrases = [];
+let availablePhrasesConst = [];
+let counter = 0;
+
+let phrase;
+
+// Функция для отображения следующей фразы
+function displayNextPhrase() {
+    console.log(availablePhrases.length)
+    if ( (availablePhrases.length - 1) >= counter) {
+        phrase = availablePhrases[counter];
+        counter = counter + 1;
+        const words = phrase.text.split(" ").sort(() => Math.random() - 0.5);
+
+        // Очищаем контейнеры
+        sentenceContainer.innerHTML = "";
+        wordsContainer.innerHTML = "";
+
+        // Выводим перемешанные слова
+        words.forEach((word) => {
+            const wordElement = document.createElement("span");
+            wordElement.textContent = word;
+            wordElement.className = "draggable text-center sentence-game-word";
+            wordElement.addEventListener("click", () => {
+                if (wordElement.parentElement === wordsContainer) {
+                    sentenceContainer.appendChild(wordElement);
+                    // Озвучиваем слово при клике
+                    responsiveVoice.speak(word, "UK English Male");
+                } else {
+                    wordsContainer.appendChild(wordElement);
+                }
+
+            });
+            wordsContainer.appendChild(wordElement);
+        });
+        if (phrase.photo) {
+            photoElement.src = '{% get_media_prefix %}' + phrase.photo;
+        } else {
+            photoElement.style.display = "none";
+        }
+        helpTextElement.textContent = phrase.helpText;
+
+
+        translateElement.textContent = phrase.translate;
+
+    } else {
+
+
+        document.getElementById('help__box').style.display = 'none';
+        document.getElementById('content__box').style.display = 'none';
+
+        document.getElementById('play-again-buttons').style.display = 'block'; // Показать кнопку "Вернуться назад"
+
+
+    }
+}
+
+
+
+// Обработчик события на кнопку "Перевірити"
+checkButton.addEventListener("click", () => {
+    const userSentence = Array.from(sentenceContainer.children).map((element) => element.textContent).join(" ");
+    const resultMessageContainer = document.getElementById("result-message-container");
+    const resultMessage = document.getElementById("result-message");
+
+    const currentPhrase = availablePhrases[availablePhrases.length - 1];
+
+    if (userSentence === phrase.text) {
+        resultMessageContainer.classList.remove("my-text-danger");
+        resultMessageContainer.classList.add("my-text-success");
+        resultMessage.textContent = "Правильно!";
+    } else {
+        resultMessageContainer.classList.remove("my-text-success");
+        resultMessageContainer.classList.add("my-text-danger");
+        resultMessage.textContent = "Неправильно. Спробуйте ще раз.";
+    }
+});
+
+        // Обработчик события на кнопку "Играть еще раз"
+        playAgainButton.addEventListener("click", () => {
+            counter = 0;
+
+            document.getElementById('play-again-buttons').style.display = 'none'; // Показать кнопку "Вернуться назад"
+            displayNextPhrase();
+            document.getElementById('help__box').style.display = 'block';
+            document.getElementById('content__box').style.display = 'block';
+        });
+
+        // Обработчик события на кнопку "Вернуться назад"
+        backButton.addEventListener("click", () => {
+            window.history.back(); // Этот код должен сработать для возврата на предыдущую страницу
+        });
+
+
+
+
+refreshButton.addEventListener('click', () => {
+    displayNextPhrase();
+    // Вам нужно также сбросить сообщение о результатах после нажатия "Наступне"
+    const resultMessageContainer = document.getElementById("result-message-container");
+    const resultMessage = document.getElementById("result-message");
+    resultMessageContainer.classList.remove("my-text-success", "my-text-danger");
+    resultMessage.textContent = "";
+});
+
+
+
+
+// Функция для отображения кнопок и скрытия блоков с фразой и словами
+function showPlayAgainButtons() {
+    sentenceContainer.style.display = "none";
+    wordsContainer.style.display = "none";
+    playAgainButtons.style.display = "block";
+}
+
+
+
+
+
+// Загрузка данных с сервера при загрузке страницы
+fetch('/matching/new_sentences_game_new/' + playlist + '/')
+    .then(function (response) {
+        return response.json();
+    })
+    .then(function (data) {
+        availablePhrases = JSON.parse(JSON.stringify(data.phrases));
+        displayNextPhrase();
+    })
+    .catch(function (error) {
+        console.error('Произошла ошибка при загрузке данных:', error);
+    });
+});
+</script>
+
+{% endblock %}

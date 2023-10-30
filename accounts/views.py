@@ -1,10 +1,9 @@
-from random import sample, random
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from .forms import PlaylistForm
-from .models import PlaylistItem, Playlist
+from .forms import PlaylistForm, CustomPagesForm
+from .models import PlaylistItem, Playlist, Pages, SavedPage
 from base_game.models import BaseGameModel
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
@@ -12,7 +11,6 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from matching.models import Sentence
 from django.contrib import messages
-
 
 
 def register(request):
@@ -36,7 +34,7 @@ def add_to_playlist(request):
         playlist = Playlist.objects.get(pk=playlist_id)
         playlist_item = PlaylistItem(user=request.user, word=word, playlist=playlist)
         playlist_item.save()
-    return redirect('add_to_playlist')
+    return redirect('my:create_playlist')
 
 
 @login_required
@@ -48,7 +46,7 @@ def add_to_playlist_sentences(request):
         playlist = Playlist.objects.get(pk=playlist_id)
         playlist_item = PlaylistItem(user=request.user, sentence=word, playlist=playlist)
         playlist_item.save()
-    return redirect('add_to_playlist_sentences')
+    return redirect('my:create_playlist')
 
 @login_required
 def user_playlist(request):
@@ -66,14 +64,14 @@ def user_playlist(request):
 def create_playlist(request):
     playlists = Playlist.objects.filter(user=request.user)
 
-    words = BaseGameModel.objects.filter(autor=request.user).order_by('created_at')
+    words = list(reversed(BaseGameModel.objects.filter(autor=request.user).order_by('created_at')))
     paginator_words = Paginator(words, 10)
     page_number_words = request.GET.get('page_words')
     page_words = paginator_words.get_page(page_number_words)
 
-    words = Sentence.objects.filter(autor=request.user).order_by('created_at')
-    paginator_sentences = Paginator(words, 10)
-    page_number_sentences = request.GET.get('page_words')
+    sentences = list(reversed(Sentence.objects.filter(autor=request.user).order_by('created_at')))
+    paginator_sentences = Paginator(sentences, 10)
+    page_number_sentences = request.GET.get('page_sentences')
     page_sentences = paginator_sentences.get_page(page_number_sentences)
 
     if request.method == 'POST':
@@ -99,7 +97,6 @@ def create_playlist(request):
     })
 
 
-@login_required
 def playlist_detail(request, playlist_id=None, playlist_uuid=None):
     playlist = None
     playlist_items = None
@@ -114,39 +111,15 @@ def playlist_detail(request, playlist_id=None, playlist_uuid=None):
     return render(request, 'playlist/playlist_detail.html', {'playlist': playlist, 'playlist_items': playlist_items})
 
 
-@login_required
 def playlist_game(request, playlist_id, game_type):
-    playlist = get_object_or_404(Playlist, id=playlist_id)
-    import random
 
     if game_type == 'matching':
-        sentence_ids = PlaylistItem.objects.filter(playlist=playlist).values_list('sentence_id', flat=True)
-        sentences = Sentence.objects.filter(id__in=sentence_ids)
-        random_sentence_text = random.choice(sentences).text
-
-        context = {'random_sentence': random_sentence_text}
-        return render(request, 'matching/matching_game.html', context)
+        playlist_id = playlist_id
+        return render(request, 'matching/new_sentences_game.html', {'playlist_id': playlist_id})
 
     elif game_type == 'base_game':
-        available_words = BaseGameModel.objects.all()
-        if playlist:
-            words = [item.word for item in PlaylistItem.objects.filter(playlist=playlist)]
-            words = [word for word in words if word is not None]  # Отфильтровать None
-            if words:
-                available_words = available_words.filter(pk__in=[word.pk for word in words])
-            else:
-                available_words = available_words.none()
-
-
-        if available_words.count() > 0:
-            word = sample(list(available_words), 1)[0]
-            descriptions = sample(list(BaseGameModel.objects.exclude(pk=word.pk)), 2)
-            options = [word.description] + [desc.description for desc in descriptions]
-            options = sample(options, len(options))
-        else:
-            options = []
-
-        return render(request, 'base_game/game_template.html', {'word': word, 'options': options})
+        playlist_id = playlist_id
+        return render(request, 'base_game/new_game.html', {'playlist_id': playlist_id})
 
     else:
         return HttpResponse("Неверный тип игры")
@@ -236,3 +209,57 @@ def delete_word(request, word_id, type):
             messages.error(request, 'Вы не являетесь автором этого слова.')
 
     return redirect('my:create_playlist')
+
+
+def view_page(request, page_id):
+    page = get_object_or_404(Pages, pk=page_id)
+    return render(request, 'page/page.html', {'page': page})
+
+
+def view_all_pages(request):
+    pages = Pages.objects.filter(user=request.user)
+    saved_pages = SavedPage.objects.filter(user=request.user)
+    return render(request, 'page/all_pages.html', {'pages': pages, 'saved_pages': saved_pages})
+
+
+def create_pages(request):
+    if request.method == 'POST':
+        form = CustomPagesForm(request.user, request.POST)
+        if form.is_valid():
+            new_page = form.save(commit=False)
+            new_page.user = request.user
+            new_page.save()
+            form.save_m2m()
+            return redirect('my:view_all_pages')
+    else:
+        form = CustomPagesForm(request.user)
+
+    return render(request, 'page/create_pages.html', {'form': form})
+
+
+def delete_page(request, page_id):
+    page = get_object_or_404(Pages, pk=page_id)
+
+    if request.user.id == page.user.id:
+        try:
+            page.delete()
+            return JsonResponse({'message': 'Успешно удалено', 'status': 'success'})
+        except Exception as e:
+            return JsonResponse({'message': f'Ошибка при удалении: {str(e)}', 'status': 'error'})
+
+    return JsonResponse({'message': 'Щось не так!', 'status': 'error'})
+
+
+def save_page(request, page_id):
+    page = get_object_or_404(Pages, pk=page_id)
+
+    # Попытайтесь получить или создать объект SavedPage для пользователя и страницы
+    saved_page, created = SavedPage.objects.get_or_create(user=request.user, page=page)
+
+    if created:
+        # Если объект был создан (то есть страница ранее не была сохранена), сохраните его
+        saved_page.save()
+        # Опционально, вы можете добавить сообщение об успешном сохранении
+
+    return redirect('my:view_page', page_id=page_id)
+

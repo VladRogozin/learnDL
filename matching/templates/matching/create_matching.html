@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-5 font-family-game">
+<div class="container mt-5 font-family-game base-container">
     <div class="row">
         <div class="col-md-12 ">
             <!-- Текст предупреждения -->
@@ -25,32 +25,47 @@
             </div>
 
 
-           <form method="post">
-              {% csrf_token %}
-              <div class="form-group">
-                <label for="text">Слово</label>
-                <input type="text" class="form-control" id="text" name="text">
-              </div>
-              <div class="form-group">
-                <label for="level">Рівень</label>
-                {{ form.level }}
-              </div>
-               <br>
-               <div class="form-group custom-tooltip">
-                    <label for="hide">Приховати</label>
-                    {{ form.hide }}
-                   <span class="tooltip-text">Приховати це слово від інших користувачів. Воно буде доступно тільки вам.</span>
-               </div>
-               <br>
-              <div class="form-group mt-3">
-                <button type="submit" class="btn b-color-orange btn-lg">Створити</button>
-              </div>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="text">Речення</label>
+                    <input type="text" class="form-control" id="text" name="text">
+                </div>
+                <div class="form-group">
+                    <label for="translate">Переклад</label>
+                    <input type="text" class="form-control" id="translate" name="translate">
+                </div>
+                <div class="form-group">
+                    <label for="helpText">Допоміжний текст</label>
+                    <input type="text" class="form-control" id="helpText" name="helpText">
+                </div>
+                <div class="form-group">
+                    <label for="level">Рівень</label>
+                    {{ form.level }}
+                </div>
+                                <br>
+                           <div class="form-group custom-tooltip">
+                                <label for="hide">Приховати</label>
+                                {{ form.hide }}
+                               <span class="tooltip-text">Приховати це слово від інших користувачів. Воно буде доступно тільки вам.</span>
+                           </div>
+                                <br>
+                <div class="form-group">
+                    <label for="photo">Фото</label>
+                    {{ form.photo }}
+                </div>
+                <br>
+                <div class="form-group mt-3">
+                    <button type="submit" class="btn b-color-orange btn-lg">Створити</button>
+                </div>
             </form>
-            {% if errors %}
+            {% if form.errors %}
                 <div class="alert alert-danger mt-3">
                     <ul>
-                        {% for error in errors %}
-                            <li>{{ error }}</li>
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
                         {% endfor %}
                     </ul>
                 </div>

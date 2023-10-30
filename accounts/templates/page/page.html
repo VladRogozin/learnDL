@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+{% if page %}
+<div class="container mt-5 font-family-game base-container">
+    <div class="row text-center">
+        <h1 class="text-center title-page">{{ page.title }}</h1>
+
+        <div class="ml-auto"> {# Создаем отступ слева с автоматической маржой #}
+            {% if user.is_authenticated %}
+                {% if user != page.user %}
+                    <a href="{% url 'my:save_page' page.id %}" class="btn"><img src="{% static 'img/save.svg' %}" alt="зберегти" ></a>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <hr>
+    </div>
+
+    <div>
+        <div class="row">
+            <div class="col-md-6">
+                <p class="text-center description-page"> {{ page.description }}</p>
+
+            </div>
+            {% for playlist in page.playlists.all %}
+                <div class="col-md-6 playlist-page">
+                    <div class="d-flex align-items-center">
+                        <a href="{% url 'my:playlist_detail' playlist.id %}"><p class="exercise">{{ forloop.counter }}➤</p></a>
+                        <p class="exercise-line"></p> <!-- Пустой элемент для горизонтальной линии -->
+                        <p class="exercise-title">{{ playlist.title }}<img class="random-image" alt="Вивчив" style="width: 40px; padding: 2px;"></p>
+                    </div>
+                    <hr>
+                    <p class="text-center">{{ page.description }}</p>
+                    <hr>
+                    <a href="{% url 'my:playlist_detail' playlist.id %}" class="btn b-color-orange">Займатися</a>
+                </div>
+            <br>
+            <br>
+            {% endfor %}
+        </div>
+    </div>
+{% else %}
+    <p>Страница не найдена</p>
+{% endif %}
+</div>
+
+
+<script>
+    var images = [
+        '{% static "img/1с.png" %}',
+        '{% static "img/2с.png" %}',
+        '{% static "img/3с.png" %}',
+        '{% static "img/4с.png" %}',
+        '{% static "img/5с.png" %}'
+    ];
+
+    var randomImages = document.querySelectorAll(".random-image");
+
+    randomImages.forEach(function(image) {
+        var randomIndex = Math.floor(Math.random() * images.length);
+        image.src = images[randomIndex];
+    });
+</script>
+{% endblock %}

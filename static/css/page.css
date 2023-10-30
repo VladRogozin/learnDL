@@ -1,0 +1,252 @@
+.base-container {
+    background-color: #edf3f9;
+    color: #34393c;
+}
+
+.title-header-page {
+    font-size: 20px;
+    color: #34393c;
+    background-color: #f2eecb;
+    border: 1px solid #f5dc18; /* Цвет и толщина бордера */
+        border-radius: 5px;
+    padding: 10px; /* Отступ вокруг текста внутри рамки */
+    display: inline-block; /* Делаем рамку блочным элементом и подгоняем под содержимое */
+}
+
+
+.form-check-box {
+    height: 140px;
+    overflow-y: auto;
+}
+
+.title-page {
+    font-family: Arial, sans-serif;
+    margin-top: 22px;
+    margin-bot: 10px;
+    padding: 10px;
+    background: linear-gradient(to right, #ffffff, #f2a963);
+    background-size: 100% 100%;
+    background-attachment: fixed;
+    border-top: 2px solid #ffbd7d; /* Бордер сверху */
+
+}
+
+.description-page {
+    font-family: Arial, sans-serif;
+    margin: 22px 30px 22px 0;
+    padding: 10% 10px;
+    font-size: 25px;
+    background: linear-gradient(to right, #ffffff, #66a6e3);
+    border-radius: 5px;
+    background-size: 100% 100%;
+    background-attachment: fixed;
+    border-top: 2px solid #0f8aff; /* Бордер сверху */
+
+}
+
+.description-playlist {
+    margin: 22px 0px;
+    padding: 3% 10px;
+    font-size: 25px;
+    border-radius: 5px;
+    background-size: 100% 100%;
+    background-attachment: fixed;
+    border-bottom: 2px solid #c8cccf; /* Бордер сверху */
+}
+
+.page-title-list {
+
+    font-size: 25px;
+    background: linear-gradient(to right, #ffffff, #a8cdef);
+    border-radius: 5px;
+    background-size: 100% 100%;
+    background-attachment: fixed;
+}
+
+.playlist-page {
+    padding: 3%;
+    border: 2px solid transparent; /* Устанавливаем начальную толщину грани */
+    border-radius: 5px;
+    overflow: hidden; /* Скрываем всё, что за границами блока */
+    border-image-source: linear-gradient(30deg, #ff9f42, transparent 50%);
+    border-image-slice: 1; /* Равномерное применение изображения как бордера */
+    border-image-width: 3px; /* Толщина бордера */
+    border-image-repeat: round; /* Замостить изображение */
+}
+
+
+.button-container {
+    display: flex;
+    justify-content: flex-end; /* Выравнивание элементов по правому краю контейнера */
+}
+
+.delete-button-page {
+    position: absolute;
+    top: 75%;
+    right: 3%;
+    cursor: pointer; /* Изменить вид курсора при наведении на кнопку */
+}
+
+.link-button-page {
+    position: absolute;
+    top: 75%;
+    right: 13%;
+    cursor: pointer; /* Изменить вид курсора при наведении на кнопку */
+}
+
+.save-button-page {
+    position: absolute;
+    top: 75%;
+    right: 23%;
+    cursor: pointer; /* Изменить вид курсора при наведении на кнопку */
+}
+
+
+.exercise {
+    width: 40px; /* Задайте ширину по вашему усмотрению */
+    height: 40px; /* Задайте высоту по вашему усмотрению */
+    background-color: none; /* Задайте желаемый цвет фона */
+    color: #34393c; /* Задайте цвет текста внутри квадрата */
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+     border: 2.5px dotted #ff9f42;
+    border-radius: 5px; /* Задайте радиус скругления углов */
+}
+
+.exercise-title {
+    position: relative;
+    padding: 0 10px;
+    color: #34393c;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid transparent; /* Устанавливаем начальную толщину грани */
+    border-radius: 5px;
+    overflow: hidden; /* Скрываем всё, что за границами блока */
+    border-image-source: linear-gradient(90deg, #ff9f42, transparent 50%);
+    border-image-slice: 1; /* Равномерное применение изображения как бордера */
+    border-image-width: 2px; /* Толщина бордера */
+    border-image-repeat: round; /* Замостить изображение */
+}
+
+
+.exercise-line {
+    position: relative;
+    width: 100px;
+    height: 10px;
+    overflow: hidden;
+}
+
+.exercise-line::before {
+    content: "";
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background-color: #ff9f42; /* Цвет точки */
+    border-radius: 50%; /* Круглая точка */
+    animation: moveDots 4s linear infinite; /* Анимация точек */
+    top: 0px; /* Положение точки по вертикали */
+    left: -3px; /* Положение точки по горизонтали (начальная позиция) */
+}
+
+@keyframes moveDots {
+    0% {
+        transform: translateX(0); /* Начальная позиция */
+    }
+    25% {
+        transform: translateX(100px); /* Первая точка достигает половины пути */
+    }
+    50% {
+        transform: translateX(100px); /* Первая точка на половине пути */
+    }
+    75% {
+        transform: translateX(0); /* Первая точка возвращается в начальную позицию */
+    }
+    100% {
+        transform: translateX(0); /* Возвращение в начальную позицию */
+    }
+}
+
+.exercise-line::after {
+    content: "";
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background-color: #ff9f42; /* Цвет точки */
+    border-radius: 50%; /* Круглая точка */
+    animation: moveDots 4s linear 1s infinite; /* Анимация точек с задержкой в 2 секунды */
+    top: 0px; /* Положение точки по вертикали */
+    left: -3px; /* Положение точки по горизонтали (начальная позиция) */
+    margin-top: 20px; /* Опциональный верхний отступ для изображения */
+}
+
+.play-again-buttons {
+    text-align: center; /* Центрирует текст по горизонтали */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.play-again-buttons img {
+    margin-top: 20px; /* Опциональный верхний отступ для изображения */
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* пастельный цвет для карточек */
+
+.card-pastel-1 {
+    background-color: #f6c8de; /* Первый пастельный цвет */
+}
+
+.card-pastel-2 {
+    background-color: #ffdfca; /* Второй пастельный цвет */
+}
+
+.card-pastel-3 {
+    background-color: #cfe9ef; /* Третий пастельный цвет */
+}
+
+.card-pastel-4 {
+    background-color: #f8edce; /* Четвертый пастельный цвет */
+}
+
+.card-pastel-5 {
+    background-color: #e0d5ea; /* Пятый пастельный цвет */
+}
+
+
+
+
+.b-card-pastel {
+    color: black;
+    border: 2px solid #4e4b4e;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 2s;
+    background-color: #f2f2f2; /* Цвет фона по умолчанию */
+}
+
+.b-card-pastel:hover {
+    background-color: #00a588; /* Изменение цвета фона при наведении */
+    border: 2px solid black; /* Прозрачная граница при наведении */
+}

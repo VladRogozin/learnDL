@@ -3,10 +3,10 @@
 {% load static %}
 
 {% block content %}
-<div class="container font-family-game ">
+<div class="container font-family-game base-container mt-3">
 <div class="container">
     <div class="row">
-       <div class="col-md-6 text-center mt-5 mb-5">
+       <div class="col-md-6 text-center mt-5 mb-5" style="border-right: 1px solid #8a858a;">
             <h2>Твої плейлисти:</h2>
             <div class="playlist-container">
                 <ul class="list-group">
@@ -34,14 +34,19 @@
             <form method="post">
                 {% csrf_token %}
                 <div class="form-group">
-                    <label for="{{ form.title.id_for_label }}">Назва плейлиста:</label>
-                    {{ form.title }}
+                    <label for="title">Назва</label>
+                    <input type="text" class="form-control" id="title" name="title">
+                </div>
+                <div class="form-group">
+                    <label for="description">Опис</label>
+                    <textarea class="form-control" id="description" name="description"></textarea>
                 </div>
                 <br>
                 <button type="submit" class="btn b-color-orange">Створити</button>
             </form>
         </div>
     </div>
+    <hr>
      <h1 class="page-title">Ваші слова</h1>
 
     <table class="table table-striped-columns table-hover small-size">
@@ -50,8 +55,6 @@
                 <th>Речення</th>
                 {% if user.is_authenticated %}
                 <th>У плейлист</th>
-                <th>Видимість</th>
-                <th>Видалити</th>
                 {% endif %}
             </tr>
         </thead>
@@ -60,11 +63,13 @@
             <tr class="">
                 <td>{{ word.text }}</td>
                 {% if user.is_authenticated %}
-                <td>
-                    <form method="POST" action="{% url 'my:add_to_playlist_sentences' %}">
+                <td class="dropdown">
+                  <button onclick="toggleDropdown(event)" class="b-color-orange">Налаштування</button>
+                  <ul class="dropdown-content">
+                    <li><form method="POST" action="{% url 'my:add_to_playlist_sentences' %}">
                         {% csrf_token %}
                         <input type="hidden" name="word_id" value="{{ word.id }}">
-                        <div class="form-group mb-2">
+                        <div class="form-group">
                             <select id="playlist" name="playlist" class="form-control form-control-sm">
                                 {% for playlist in user_playlists %}
                                 <option value="{{ playlist.id }}">{{ playlist.title }}</option>
@@ -72,10 +77,9 @@
                             </select>
                         </div>
                         <button type="submit" class="btn btn-very-small b-color-red">Додати</button>
-                    </form>
-                </td>
-                <td>
-                    <form method="post" action="{% url 'my:toggle_word_visibility' word.id 'sentence' %}" class="toggle-visibility-form">
+                    </form></li>
+
+                    <li><form method="post" action="{% url 'my:toggle_word_visibility' word.id 'sentence' %}" class="toggle-visibility-form">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-sm b-color-blue toggle-visibility-button">
                             {% if word.hide %}
@@ -85,9 +89,10 @@
                             {% endif %}
                         </button>
                     </form>
-                </td>
-                <td>
-                    <a href="{% url 'my:delete_word' word.id 'sentences' %}"><img src="{% static 'img/delete.svg' %}" alt="Видалити"></a>
+                    </li>
+
+                    <li><a href="{% url 'my:delete_word' word.id 'sentences' %}"><img src="{% static 'img/delete.svg' %}" alt="Видалити" style="margin: 8px;"></a></li>
+                  </ul>
                 </td>
 
                 {% endif %}
@@ -99,9 +104,23 @@
             {% endfor %}
         </tbody>
     </table>
-    <span class="current-page small-size">
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_sentences.has_previous %}
+                <a href="?page_sentences=1" class="btn btn-sm b-color-green-blue">&laquo; Перша</a>
+                <a href="?page_sentences={{ page_sentences.previous_page_number }}" class="btn btn-sm b-color-orange ">Попередня</a>
+            {% endif %}
+
+            <span class="current-page">
                 {{ page_sentences.number }} з {{ page_sentences.paginator.num_pages }}.
-    </span>
+            </span>
+
+            {% if page_sentences.has_next %}
+                <a href="?page_sentences={{ page_sentences.next_page_number }}" class="btn btn-sm b-color-orange ">Наступна</a>
+                <a href="?page_sentences={{ page_sentences.paginator.num_pages }}" class="btn btn-sm b-color-green-blue">Остання &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
     <br>
     <br>
     <br>
@@ -115,8 +134,6 @@
                 <th>Опис</th>
                 {% if user.is_authenticated %}
                 <th>У плейлист</th>
-                <th>Видимість</th>
-                <th>Видалити</th>
                 {% endif %}
             </tr>
         </thead>
@@ -130,7 +147,10 @@
                         <img class="show-more-description" src="{% static 'img/dots.svg' %}" alt="Вивчив">
                 </td>
                 {% if user.is_authenticated %}
-                <td>
+                <td class="dropdown">
+                  <button onclick="toggleDropdown(event)" class="b-color-orange">Налаштування</button>
+                  <ul class="dropdown-content">
+                    <li>
                     <form method="POST" action="{% url 'my:add_to_playlist' %}">
                         {% csrf_token %}
                         <input type="hidden" name="word_id" value="{{ word.id }}">
@@ -142,10 +162,9 @@
                             </select>
                         </div>
                         <button type="submit" class="btn btn-very-small b-color-red">Додати</button>
-                    </form>
-                </td>
-                <td>
-                    <form method="post" action="{% url 'my:toggle_word_visibility' word.id 'word' %}" class="toggle-visibility-form">
+                    </form></li>
+
+                      <li><form method="post" action="{% url 'my:toggle_word_visibility' word.id 'word' %}" class="toggle-visibility-form">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-sm b-color-blue toggle-visibility-button">
                             {% if word.hide %}
@@ -154,13 +173,12 @@
                                 <img src="{% static 'img/show.svg' %}" alt="Показать">
                             {% endif %}
                         </button>
-                    </form>
-                </td>
-                <td>
-                    <a href="{% url 'my:delete_word' word.id 'word' %}"><img src="{% static 'img/delete.svg' %}" alt="Видалити"></a>
-                </td>
+                    </form></li>
+                      <li><a href="{% url 'my:delete_word' word.id 'word' %}"><img src="{% static 'img/delete.svg' %}" alt="Видалити"></a></li>
+
 
                 {% endif %}
+                  </ul>
             </tr>
             {% empty %}
             <tr>

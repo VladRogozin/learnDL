@@ -1,34 +1,158 @@
 {% extends 'base.html' %}
+
 {% load static %}
 
 {% block content %}
-<div class="container mt-5">
-    <!-- Перший ряд - зображення і текст -->
-    <div class="row position-relative">
-        <div class="">
-            <img class="img-fluid my-img-front" src="{% static 'img/img_1.jpeg' %}" alt="Зображення">
-        </div>
-        <div class="col-md-6 position-absolute top-0 end-0 text-right mt-5">
-            <p class="my-title-h1 font-weight-bold">Добро пожаловать на наш сайт, предназначенный для обучения словам через увлекательные игры!</p>
-            <p class="my-title-h1">"Мы стремимся создать уникальный опыт, который поможет вам улучшить свой словарный запас и развить языковые навыки, путем участия в увлекательных играх."</p>
-        </div>
-    </div>
 
-    <!-- Додайте форму для введення поради -->
-    <div class="row mt-5">
-        <div class="col-md-6">
-            <h2 class="font-weight-bold">Залиште пораду</h2>
-            <form method="post">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="message">Порада:</label>
-                    <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Відправити</button>
-            </form>
+ <main class="main">
+      <div class="bubbles-block mb-5">
+        <div class="absolute-text" style="font-family: 'Ubuntu', Arial, Helvetica, sans-serif;">
+          <h1>Привiт!</h1>
+
         </div>
-    </div>
-</div>
+        <div class="absolute-text-2" style="font-family: 'Ubuntu', Arial, Helvetica, sans-serif;">
+          <h2>Ми раді вітати вас в світі можливостей та знань. Давайте робити разом щось важливе.</h2>
+        </div>
+
+        <div class="bubbles-block__little little-bubbles">
+          <div class="little-bubbles__left">
+            <div class="little-bubbles__left-top">
+              <div class="bubble" style="background-image: url('{% static 'img/nav_and_front/improve.jpeg' %}');">
+              </div>
+            </div>
+            <div class="little-bubbles__left-bottom"></div>
+          </div>
+          <div class="little-bubbles__middle">
+            <div class="bubble" style="background-image: url('{% static 'img/nav_and_front/learn.jpeg' %}');">
+            </div>
+          </div>
+          <div class="little-bubbles__right">
+            <div class="bubble" style="background-image: url('{% static 'img/nav_and_front/explore.jpeg' %}');"></div>
+          </div>
+        </div>
+
+        <div class="bubbles-block__big">
+            <div class="bubble" style="background-image: url('{% static 'img/nav_and_front/learn.jpeg' %}');"></div>
+
+        </div>
+
+      </div>
+
+      <div class="find-block mt-5">
+        <div class="container">
+          <div class="find-block__container">
+            <div class="find-block__title">
+              &#8226; Що ви можете тут знайти:
+            </div>
+
+            <div class="find-block__item">
+              <div class="find-block__item-left">
+                <div class="find-block__item-image">
+                  <img src="{% static 'img/nav_and_front/puzzle.svg' %}" alt="puzzle icon">
+                </div>
+              </div>
+              <div class="find-block__item-right">
+                <div class="find-block__item-title">Методи навчання ігровим способом.</div>
+                <div class="find-block__item-text">
+                  На нашому сайті ви знайдете інноваційні методи навчання іноземних мов через ігри, які зроблять процес вивчення мови захопливим і ефективним.
+                </div>
+              </div>
+            </div>
+
+            <div class="find-block__item">
+              <div class="find-block__item-left">
+                <div class="find-block__item-image">
+                  <img src="{% static 'img/nav_and_front/wand.svg' %}" alt="magic wand icon">
+                </div>
+              </div>
+              <div class="find-block__item-right">
+                <div class="find-block__item-title">Створення власних уроків.</div>
+                <div class="find-block__item-text">
+                  Можливість створювати унікальні уроки з індивідуально налаштованими завданнями дозволить вам адаптувати навчання під ваші потреби та теми, які вас цікавлять.
+                </div>
+              </div>
+            </div>
+
+            <div class="find-block__item">
+              <div class="find-block__item-left">
+                <div class="find-block__item-image">
+                  <img src="{% static 'img/nav_and_front/list.svg' %}" alt="list icon">
+                </div>
+              </div>
+              <div class="find-block__item-right">
+                <div class="find-block__item-title">Плейлисти для кращого навчання.</div>
+                <div class="find-block__item-text">
+                  Наш сайт надає можливість створювати та використовувати плейлисти з уроків, що сприяє організації матеріалів та допомагає зосередитися на конкретних темах під час вивчення.
+                </div>
+              </div>
+            </div>
+
+            <div class="find-block__item">
+              <div class="find-block__item-left">
+                <div class="find-block__item-image">
+                  <img src="{% static 'img/nav_and_front/users.svg' %}" alt="users icon">
+                </div>
+              </div>
+              <div class="find-block__item-right">
+                <div class="find-block__item-title">Обмін ресурсами та досвідом.</div>
+                <div class="find-block__item-text">
+                  Ви також зможете користуватися матеріалами, створеними іншими користувачами, а також ділитися ними зі своїми друзями і знайомими, що допомагає популяризувати корисні ресурси і знання.
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="try-block">
+        <div class="container">
+          <div class="try-block__container">
+            <div class="try-block__title">&#8226; Спробуй зараз:
+            </div>
+            <div class="try-block__row">
+                {% for page in pages %}
+                  <div class="try-block__card mb-3 {% cycle 'card-pastel-1' 'card-pastel-2' 'card-pastel-3' 'card-pastel-4' 'card-pastel-5' %}">
+                      <h3>{{ page.title }}</h3>
+                      <p>{{ page.description|slice:":65" }}...</p>
+                      <a href="{% url 'my:view_page' page.id %}" class="btn b-card-pastel">Вивчати</a>
+                  </div>
+                {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-block">
+        <div class="container">
+          <div class="about-block__title">&#8226; Наша мета:</div>
+          <div class="about-block__info">
+            <div class="about-block__gif">
+              <img class="dino-gif" src="{% static 'img/nav_and_front/dino.gif' %}" alt="dino team">
+            </div>
+            <div class="about-block__text">
+              Наш сайт присвячений вивченню мов та створенню індивідуальних занять та ігор. Головна наша мета - робити навчання мов цікавим і продуктивним. Ми надаємо найкращі інструменти та ресурси для досягнення вашої мовної мети. Незалежно від вашого рівня - початківець чи досвідчений вивчальник, ми готові розробити для вас індивідуальну програму. Наші ігри та завдання роблять вивчання мов захоплюючою пригодою. Разом досягнемо ваших мовних цілей та відкриємо нові можливості.            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tips-block">
+        <div class="container">
+          <div class="tips-block__container">
+              <form method="post" class="tips-block__text">
+                  {% csrf_token %}
+                  <span>
+                      Якщо у вас є ідея або порада, як нам стати кращими, напишіть її внизу, та ми обов'язково візьмемо її до уваги!
+                  </span>
+                  <textarea name="message" rows="8" class="tips-block__input"></textarea>
+                  <button type="submit" class="tips-block__button">Надіслати</button>
+              </form>
+            </div>
+          </div>
+      </div>
+    </main>
+    <footer class="footer"></footer>
+  </div>
 {% endblock %}
 
 

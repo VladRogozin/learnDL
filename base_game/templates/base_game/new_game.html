@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="container mt-5 mb-5 font-family-game base-container">
+    <h1 class="word-title custom-tooltip" id="word">
+        <span id="translate" class="tooltip-text"> </span>
+    </h1>
+
+
+    <div id="result-message-container" class="text-center result-message-container">
+        <p id="result-message"></p>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-end">
+
+        <ul id="descriptions" class="playlist_game_base"></ul>
+
+    </div>
+
+
+    <button type="button" class="btn b-color-green-blue" id="next-button">Следующий</button>
+
+
+        <div id="play-again-buttons" class="play-again-buttons" style="display: none;">
+            <div id="centered-container">
+                <h1>Найважче позаду, найголовніше попереду!</h1>
+                <img src="{% static 'img/finish.png' %}" alt="Скрыть">
+            </div>
+            <button id="back-button" class="btn b-color-red-orange" >Вернуться назад</button>
+            <button id="play-again-button" class="btn b-color-green-blue">Играть еще раз</button>
+        </div>
+
+
+</div>
+
+<script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+
+<script>
+    var playlist = {{ playlist_id }}
+    var currentIndex = -1;
+    var wordElement = document.getElementById('word');
+    var descriptionsList = document.getElementById('descriptions');
+    var translateElement = document.getElementById('translate');
+    var nextButton = document.getElementById('next-button');
+    var gameData = [];
+
+
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+    console.log(gameData.length)
+    function displayGameData() {
+
+        currentIndex++;
+        if (currentIndex < gameData.length) {
+            var word = gameData[currentIndex].word;
+            var descriptions = [gameData[currentIndex].description];
+            var translate = [gameData[currentIndex].translate];
+            responsiveVoice.speak(gameData[currentIndex].word, "UK English Male");
+
+            for (var i = 0; i < 2; i++) {
+                var randomIndex = Math.floor(Math.random() * gameData.length);
+                while (randomIndex === currentIndex) {
+                    randomIndex = Math.floor(Math.random() * gameData.length);
+                }
+                descriptions.push(gameData[randomIndex].description);
+            }
+
+            shuffleArray(descriptions);
+
+            wordElement.innerText = word;
+            console.log(word)
+            descriptionsList.innerHTML = '';
+
+            var translateElement = document.createElement('span');
+            translateElement.className = 'tooltip-text';
+            translateElement.textContent = translate[0]; // Устанавливаем текст перевода
+            wordElement.appendChild(translateElement);
+
+            descriptions.forEach(function (description, index) {
+                var listItemContainer = document.createElement('div'); // Создаем контейнер для элемента li и кнопки
+
+                listItemContainer.classList.add("mb-2");
+                listItemContainer.classList.add("my-div-li-button");
+
+                var listItem = document.createElement('li');
+                listItem.classList.add("l-hover");
+                listItem.textContent = description;
+
+                // Добавьте атрибут tabindex="-1" для предотвращения фокуса
+                listItem.setAttribute("tabindex", "-1");
+
+                var button = document.createElement('button'); // Создаем кнопку
+                var img = document.createElement('img'); // Создаем элемент изображения
+                img.src = "{% static 'img/voise.svg' %}"; // Устанавливаем путь к изображению
+                img.alt = "Слушать"; // Устанавливаем атрибут alt
+
+                button.appendChild(img); // Добавляем изображение в кнопку
+
+                button.classList.add('voice-button')
+
+                listItemContainer.appendChild(listItem); // Добавляем элемент li в контейнер
+                listItemContainer.appendChild(button); // Добавляем кнопку в контейнер
+
+                listItem.addEventListener('click', function () {
+                    var resultMessage = document.getElementById('result-message');
+                    resultMessage.textContent = ''; // Очищаем текст
+                    resultMessage.classList.remove("right_win"); // Убираем стили "right_win"
+                    resultMessage.classList.remove("lose_lose"); // Убираем стили "lose_lose"
+
+                    // Проверяем, является ли выбранный ответ правильным
+                    if (description === gameData[currentIndex].description) {
+                        resultMessage.textContent = 'Вірно!';
+                        resultMessage.classList.add("right_win"); // Добавляем стили "right_win"
+                    } else {
+                        resultMessage.textContent = 'Спробуй ще!';
+                        resultMessage.classList.add("lose_lose"); // Добавляем стили "lose_lose"
+                    }
+                });
+
+                button.addEventListener('click', function () {
+                    var resultMessage = document.getElementById('result-message');
+                    resultMessage.textContent = ''; // Очищаем текст
+                    resultMessage.classList.remove("right_win"); // Убираем стили "right_win"
+                    resultMessage.classList.remove("lose_lose"); // Убираем стили "lose_lose"
+
+                    // Запускаем звук
+                    responsiveVoice.speak(description, "UK English Male");
+                });
+
+                descriptionsList.appendChild(listItemContainer); // Добавляем контейнер в список
+            });
+
+        } else {
+
+            var backButton = document.getElementById('back-button');
+            var playAgainButton = document.getElementById('play-again-button');
+
+            // Обработчик события для кнопки "Вернуться назад"
+                backButton.addEventListener('click', function () {
+                window.history.back(); // Этот код должен сработать для возврата на предыдущую страницу
+                });
+
+            // Обработчик события для кнопки "Играть еще раз"
+            playAgainButton.addEventListener('click', function () {
+                currentIndex = -1;
+                document.getElementById('play-again-buttons').style.display = 'none';
+                displayGameData();
+                document.getElementById('next-button').style.display = 'block';
+            });
+            wordElement.textContent = 'Игра завершена';
+            descriptionsList.innerHTML = '';
+            document.getElementById('play-again-buttons').style.display = 'block'; // Показать кнопку "Вернуться назад"     next-button
+            document.getElementById('next-button').style.display = 'none';
+
+        }
+    }
+
+        nextButton.addEventListener('click', function () {
+            var resultMessage = document.getElementById('result-message');
+            resultMessage.textContent = ''; // Очищаем текст
+            resultMessage.classList.remove("right_win"); // Убираем стили "right_win"
+            resultMessage.classList.remove("lose_lose"); // Убираем стили "lose_lose"
+            console.log(gameData[currentIndex].word)
+
+            displayGameData();
+        });
+
+
+    // Загрузка данных с сервера при загрузке страницы
+    fetch('/words/new_game_new/' + playlist + '/') // Замените на ваш реальный URL API
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (data) {
+            gameData = data;
+            displayGameData();
+        })
+        .catch(function (error) {
+            console.error('Произошла ошибка при загрузке данных:', error);
+        });
+</script>
+{% endblock %}

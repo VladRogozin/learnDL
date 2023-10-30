@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     {% load static %}
     <meta charset="utf-8">
@@ -7,6 +7,7 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Pangolin&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Coming+Soon&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
@@ -14,82 +15,143 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css">
     <link rel="icon" href="{% static 'img/logo.png' %}" type="image/png">
     <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/nav_bar.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/page.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
 
     <title>{% block title %}LEARN Deutsch{% endblock %}</title>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'base_view' %}">
-            <img class="my-logo-img mx-auto" src="{% static 'img/logo.png' %}" alt="learn">
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 mx-auto">
-                <li class="nav-item mx-2">
-                    <a class="nav-link" href="{% url 'words:game' %}" style="color:#00a588;">Ігри</a>
-                </li>
-                <li class="nav-item mx-2">
-                    <a class="nav-link" href="{% url 'artikel:artikel_game' %}" style="color:#cfac08;">Гра артиклі</a>
-                </li>
-                <li class="nav-item mx-2">
-                    <a class="nav-link" href="{% url 'matching:matching' %}" style="color:#cfac08;">Збери речення</a>
-                </li>
-                {% if user.is_authenticated %}
-                    <li class="nav-item mx-2">
-                        <a class="nav-link" href="{% url 'matching:create_sentence' %}" style="color:#cf4808;">Додати речення</a>
-                    </li>
-                    <li class="nav-item mx-2">
-                        <a class="nav-link" href="{% url 'words:create_words' %}" style="color:#cf4808;">Додати слово</a>
-                    </li>
-                    <li class="nav-item mx-2">
-                        <a class="nav-link" href="{% url 'my:create_playlist' %}" style="color:#2d4097;">Плейлисти</a>
-                    </li>
-                {% endif %}
-            </ul>
+  <div class="wrapper">
+     <header class="header" style="font-family: Arial, Helvetica, sans-serif;">
+          <div class="container" >
+            <div class="header__menu-burger menu-burger">
+              <img src="{% static 'img/nav_and_front/burger.svg' %}" alt="open menu button" class="header__burger-icon">
+              <div class="menu-burger__container">
+                <ul class="menu-burger__list">
 
-
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         {% if user.is_authenticated %}
-                            {{ user.username }}
-                        {% else %}
-                            Увійти
+                            <li class="menu-burger__item"><a href="{% url 'my:view_all_pages' %}">Дошка з уроками</a></li>
+                            <li class="menu-burger__item"><a href="{% url 'my:create_playlist' %}">Плейлисти</a></li>
+
+                            <li class="menu-burger__item"><a href="{% url 'my:create_pages' %}">Додати урок</a></li>
+                            <li class="menu-burger__item"><a href="{% url 'matching:create_sentence' %}">Додати речення</a></li>
+                            <li class="menu-burger__item"><a href="{% url 'words:create_words' %}">Додати слово</a></li>
                         {% endif %}
+                            <li class="menu-burger__item-game"><a class="dropdown-item" href="{% url 'words:game' %}">Гра слова</a></li>
+                            <li class="menu-burger__item-game"><a class="dropdown-item" href="{% url 'matching:matching' %}">Збери речення</a></li>
+
+
+
+                        <li class="nav-item dropdown ">
+                        <a class="nav-link mt-3" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {% if user.is_authenticated %}
+                                <a class="dropdown-item" href="{% url 'logout' %}"><img src="{% static 'img/user.svg' %}" alt="Learn" class="header__login-icon"></a>
+                            {% else %}
+
+                                <a class="dropdown-item" href="{% url 'login' %}"><img src="{% static 'img/log_in.svg' %}" alt="Learn" class="header__login-icon"></a>
+
+                            {% endif %}
+                        </a>
+                    </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="header__left">
+              <div class="header__logo">
+                <a href="{% url 'base_view' %}">
+                  <img src="{% static 'img/nav_and_front/logo.png' %}" alt="Logo Learn" class="header__logo-img">
+                </a>
+                </div>
+              <div class="header__search">
+                <form class="header__search-container " role="search" method="GET" action="{% url 'words:search_words' %}">
+                  <input  class="header__search-input"  type="search" name="q" placeholder="Пошук" aria-label="Search">
+
+                <button type="submit" class="image-button" style="border: none; background: none;">
+                  <img src="{% static 'img/nav_and_front/search-icon.svg' %}" alt="Search Button" class="header__search-icon">
+                </button>
+                </form>
+              </div>
+            </div>
+
+            <div class="header__right">
+              <nav class="header__nav">
+                <ul class="header__nav-list">
+
+                <li class="header__nav-item dropdown">
+                    <a class="dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Ігри
                     </a>
-                    <div class="dropdown-menu dropdown-menu-right ml-4" aria-labelledby="userDropdown">
-                        {% if user.is_authenticated %}
-                            <a class="dropdown-item" href="{% url 'logout' %}">Вийти</a>
-                        {% else %}
-                            <a class="dropdown-item" href="{% url 'login' %}">Увійти</a>
-                            <a class="dropdown-item" href="{% url 'register' %}">Зареєструватися</a>
-                        {% endif %}
+                    <div class="dropdown-menu" aria-labelledby="userDropdown">
+                        <a class="dropdown-item" href="{% url 'words:game' %}">Ігри</a>
+                        <a class="dropdown-item" href="{% url 'matching:matching' %}">Збери речення</a>
                     </div>
                 </li>
-            </ul>
-            <form class="d-flex" role="search" method="GET" action="{% url 'words:search_words' %}">
-                <input class="form-control me-2" type="search" name="q" placeholder="Знайти слово" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Пошук</button>
-            </form>
-        </div>
+
+
+                {% if user.is_authenticated %}
+                <li class="header__nav-item dropdown">
+                    <a class="dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Робоче місце
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="userDropdown">
+                        <a class="dropdown-item" href="{% url 'my:view_all_pages' %}">Дошка з уроками</a>
+                        <a class="dropdown-item" href="{% url 'my:create_playlist' %}">Плейлисти</a>
+                        <hr class="dropdown-divider">
+                        <hr class="dropdown-divider">
+                        <a class="dropdown-item" href="{% url 'my:create_pages' %}">Додати урок</a>
+                        <a class="dropdown-item" href="{% url 'matching:create_sentence' %}">Додати речення</a>
+                        <a class="dropdown-item" href="{% url 'words:create_words' %}">Додати слово</a>
+                    </div>
+                </li>
+
+                {% endif %}
+
+
+
+                </ul>
+              </nav>
+                <ul class="header__nav-list navbar-nav">
+                    <li class="nav-item dropdown ">
+                        <a class="nav-link " href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {% if user.is_authenticated %}
+                                <img src="{% static 'img/user.svg' %}" alt="Learn" class="header__login-icon">
+                            {% else %}
+                                <img src="{% static 'img/log_in.svg' %}" alt="Learn" class="header__login-icon">
+                            {% endif %}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="userDropdown">
+                            {% if user.is_authenticated %}
+                                <a class="dropdown-item" href="{% url 'logout' %}">Вийти</a>
+                            {% else %}
+                                <a class="dropdown-item" href="{% url 'login' %}">Увійти</a>
+                                <a class="dropdown-item" href="{% url 'register' %}">Зареєструватися</a>
+                            {% endif %}
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+
+          </div>
+        </header>
+
+
+
+    <div class="container">
+        {% block content %}
+        {% endblock %}
     </div>
-</nav>
-
-
-
-
-<div class="container mt-2">
-    {% block content %}
-    {% endblock %}
-</div>
+  </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS" crossorigin="anonymous"></script>
-<script src="{% static 'js/base.js' %}"></script>
+<script src="{% static 'js/index.js' %}"></script>
 
 </body>
 </html>
+
+
+

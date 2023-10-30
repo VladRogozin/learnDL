@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="container mt-5" style="width: 100%;">
+
+    <div class="row">
+        <div class="col text-center">
+            <div>
+                <h1 class="title-header-page">Мoї уроки</h1>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        {% for page in pages %}
+            <div class="col-md-4 mb-4" style="width: 20rem;">
+                <div class="card {% cycle 'card-pastel-1' 'card-pastel-2' 'card-pastel-3' 'card-pastel-4' 'card-pastel-5' %} ">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">{{ page.title }}</h5>
+                        <p class="card-text">{{ page.description }}</p>
+
+                        <div class="buttons-container">
+                            <a href="{% url 'my:view_page' page.id %}" class="btn b-card-pastel">Вивчати</a>
+
+                            <a class="btn-copy-link link-button-page" data-link="{{ request.get_host }}{% url 'my:view_page' page.id %}">
+                                <img src="{% static 'img/link.svg' %}" alt="Видалити">
+                            </a>
+
+                            {% if user.is_authenticated and user == page.user %}
+                                <a data-page-id="{{ page.id }}" class="delete-button-page"><img src="{% static 'img/delete.svg' %}" alt="Видалити" ></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col text-center my-shadow-pages">
+                <h3>Поки що нічого немає</h3>
+                <h4>Створи свій власний урок і закріпи його сюди для вивчення   <img src="{% static 'img/5с.png' %}" alt="Видалити"></h4>
+                <a class="btn b-card-pastel" href="{% url 'my:create_pages' %}">Додати урок</a>
+            </div>
+        {% endfor %}
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+            <div class="row">
+                <div class="col text-center">
+                    <div >
+                        <h1 class="title-header-page">Збережені уроки</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                {% for saved_page in saved_pages %}
+                    <div class="col-md-4 mb-4" style="width: 20rem;">
+                        <div class="card {% cycle 'card-pastel-1' 'card-pastel-2' 'card-pastel-3' 'card-pastel-4' 'card-pastel-5' %}">
+                            <div class="card-body">
+                                <h5 class="card-title text-center">{{ saved_page.page.title }}</h5>
+                                <p class="card-text">{{ saved_page.page.description }}</p>
+
+                                <div class="buttons-container">
+                                    <a href="{% url 'my:view_page' saved_page.page.id %}" class="btn b-card-pastel">Вивчати</a>
+
+                                    <a class="btn-copy-link link-button-page" data-link="{{ request.get_host }}{% url 'my:view_page' saved_page.page.id %}">
+                                        <img src="{% static 'img/link.svg' %}" alt="Видалити">
+                                    </a>
+
+                                    {% if user.is_authenticated and user == saved_page.page.user %}
+                                        <a data-page-id="{{ saved_page.page.id }}" class="delete-button-page"><img src="{% static 'img/delete.svg' %}" alt="Видалити" ></a>
+                                    {% endif %}
+
+                                    {% if user.is_authenticated and user == page.user %}
+                                        <a data-page-id="{{ saved_page.id }}" class="delete-button-page"><img src="{% static 'img/delete.svg' %}" alt="Видалити" ></a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col text-center my-shadow-pages">
+                        <h3>Поки що нічого немає</h3>
+                        <h4>Але ти можеш знайти відповідний плейліст, у пошуку зверху. <img src="{% static 'img/3с.png' %}" alt="Видалити"></h4>
+                        <a class="btn b-card-pastel" href="{% url 'my:create_pages' %}">Додати урок</a>
+                    </div>
+                {% endfor %}
+            </div>
+
+</div>
+
+<div id="status-message" style="display: none;"></div>
+<script>
+    const csrfToken = "{{ csrf_token|escapejs }}";
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const deleteButtons = document.querySelectorAll(".delete-button-page");
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", function() {
+                const pageId = button.getAttribute("data-page-id");
+                if (confirm("Ви впевнені, що хочете видалити цю сторінку?")) {
+                    fetch(`/my/page/${pageId}/delete/`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRFToken': csrfToken
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const statusMessage = document.getElementById("status-message");
+                        statusMessage.innerHTML = data.message;
+                        statusMessage.style.display = "block";
+
+                        if (data.status === "success") {
+                            setTimeout(function() {
+                                statusMessage.style.display = "none";
+                                location.reload(); // Перезагрузить страницу после успешного удаления
+                            }, 3000);
+                        }
+                    });
+                }
+            });
+        });
+
+        const copyButtons = document.querySelectorAll(".btn-copy-link");
+            copyButtons.forEach(button => {
+                button.addEventListener("click", function() {
+                    const linkToCopy = button.getAttribute("data-link");
+                    const tempInput = document.createElement("input");
+                    document.body.appendChild(tempInput);
+                    tempInput.setAttribute("value", linkToCopy);
+                    tempInput.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(tempInput);
+
+                    const statusMessage = document.getElementById("status-message");
+                    statusMessage.innerHTML = "Посилання скопійовано!";
+                    statusMessage.style.display = "block";
+
+                    setTimeout(function() {
+                        statusMessage.style.display = "none";
+                    }, 3000);
+                });
+            });
+
+
+    });
+</script>
+{% endblock %}

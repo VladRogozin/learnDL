@@ -1,6 +1,13 @@
 body {
     font-family: 'Pangolin', cursive;
+    background: linear-gradient(to right, #fff, #a6f2f7);
+    background-size: 100% 100%;
+    background-attachment: fixed;
+    min-width: 100vw;
+
 }
+
+
 a {
     text-decoration: none;
     color: inherit;
@@ -17,6 +24,13 @@ a {
     }
 }
 
+.my-shadow-pages {
+        text-align: center;
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.4); /* Горизонтальное смещение = 0 */
+    padding: 20px;
+    border: 1px solid #101055;
+    border-radius: 20px;
+}
 
 .result-message-container {
     padding: 15px; /* Внутренний отступ */
@@ -93,6 +107,11 @@ a {
     cursor: pointer; /* Изменение курсора при наведении */
 }
 
+.chose-select {
+        font-size: 12px; /* Установите желаемый размер шрифта */
+    padding: 2px; /* Установите желаемый внутренний отступ */
+    width: 150px;
+}
 
 
 .l-hover {
@@ -113,6 +132,7 @@ a {
         font-size: 12px; /* Уменьшаем размер шрифта для мобильных устройств */
     }
 }
+
 
 
 
@@ -168,10 +188,48 @@ a {
 }
 
 
+.playlist_game_base {
+    list-style: none;
+}
+
+.playlist_game_base_li {
+    padding: 10px;
+}
+
+.right_win {
+    font-size: 15px;
+    background-color: #d3fcd6;
+    color: #06550c;
+    border: 2px solid #d3fcd6;
+    padding: 10px;
+    border-radius: 7px; /* Здесь задано значение радиуса, которое вы можете настроить */
+}
+
+.lose_lose {
+    font-size: 15px;
+    background-color: #fbc5c1;
+    color: #9e160b;
+    border: 2px solid #fbc5c1;
+    padding: 10px;
+    border-radius: 7px; /* Здесь также задано значение радиуса */
+}
+
+
+
+
+.voice-button {
+    border: none;
+    background-color: inherit;
+}
+
+.my-div-li-button {
+    display: flex;
+}
+
 
 /* Гра на спиввидношеня слив */
 .draggable {
-    font-size: 20px;
+    font-size: 16px;
     display: inline-block;
     padding: 5px;
     margin: 5px;
@@ -194,8 +252,66 @@ a {
     border-radius: 10px;
 }
 
+.img-sentence-game {
+    max-width: 612px;
+    max-height: 420px;
+    border-radius: 20px;
+
+}
+
+.img-sentence-hellp {
+    border-radius: 3%;
+}
+
+.help-message {
+    padding: 5%;
+    font-size: 20px;
+}
+
+.my-text-success {
+    color: green;
+    margin: 5px;
+    padding: 3px; /* Внутренний отступ */
+    font-size: 15px; /* Увеличение размера шрифта до 20 */
+    display: inline-block; /* Отображение как блочный элемент */
+    border-radius: 5px; /* Закругленные углы */
+    background-color: rgba(	193, 251, 197, 0.5);
+    border: 2px solid green;
+    border-radius: 10px;
+    text-align: center;
+}
 
 
+
+.my-text-danger {
+    color: red;
+    margin: 5px;
+    padding: 3px; /* Внутренний отступ */
+    font-size: 15px; /* Увеличение размера шрифта до 20 */
+    display: inline-block; /* Отображение как блочный элемент */
+    border-radius: 5px; /* Закругленные углы */
+    background-color: rgba(251, 197, 193, 0.5);
+    border: 2px solid red;
+    border-radius: 10px;
+    text-align: center;
+}
+
+
+@media (max-width: 1000px) {
+    .img-sentence-game {
+        max-width: 274px;
+        max-height: 220px;
+    }
+    .sentence-game-word {
+        font-size: 12px;
+    }
+    .my-text-danger {
+        font-size: 12px;
+    }
+    .my-text-success {
+        font-size: 12px;
+    }
+}
 
 .custom-tooltip {
     position: relative;
@@ -229,6 +345,37 @@ a {
 
 
 
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown .dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #ffe492;
+  border-radius: 10px;
+  min-width: 160px;
+  z-index: 1;
+  max-height: 200px; /* Установите максимальную высоту меню, чтобы избежать выхода за пределы экрана */
+  overflow-y: auto; /* Добавьте полосу прокрутки, если меню превышает максимальную высоту */
+  padding: 5px 10px;
+}
+
+.dropdown .dropdown-content li {
+  padding: 2px;
+  border-top: 1px solid #8a858a;
+  text-decoration: none;
+  display: block;
+}
+
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+
+
 
 
 
@@ -236,48 +383,63 @@ a {
 
 
 .b-color-red {
-    background-color: #ffb9ee; /* Цвет для выбранной опции */
+    background-color: #fe8750;
     color: black;
+    transition: background-color 0.3s ease, color 0.3s ease; /* Здесь определены свойства, которые будут анимированы и их параметры */
 }
 
 .b-color-red:hover {
-    background-color: #a5007d; /* Изменение цвета при наведении */
+    background-color: #ea2316;
     color: #fff4fc;
-    border: 2px solid #ffb9ee;
-    border-radius: 5px;
 }
+
 
 
 .b-color-orange {
-    background-color: #ffe490; /* Цвет для выбранной опции */
+    background-color: #ffe492;
     color: black;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease, border 0.3s ease;
 }
 
 .b-color-orange:hover {
-    background-color: #ffc107; /* Изменение цвета при наведении */
-    color: black;
-    border: 2px solid #ffe490;
-    border-radius: 5px;
+    background-color: #ff9f42;
+    color: #fff4fc;
 }
 
 .b-color-red-orange {
     background-color: #ffc9b8;
+    transition: background-color 0.3s ease, color 0.3s ease, border 0.3s ease;
+    color: black;
+    border: 2px solid transparent;
+    border-radius: 5px;
 }
 
 .b-color-red-orange:hover {
     background-color: #f33a00;
     color: #fff4fc;
     border: 2px solid #ffc9b8;
-    border-radius: 5px;
 }
 
 .b-color-green-blue {
     background-color: #ccfff6;
+    transition: background-color 0.3s ease, color 0.3s ease, border 0.3s ease;
+    color: black;
+    border: 2px solid transparent;
+    border-radius: 5px;
 }
 
 .b-color-green-blue:hover {
     background-color: #00a588;
     border: 2px solid #ccfff6;
-    border-radius: 5px;
 }
 
+
+.base-container {
+    background-color: #fff;
+    padding: 10px;
+    margin-top: 70px;
+    border-radius: 20px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2); /* Горизонтальное смещение, вертикальное смещение, размытие и цвет тени */
+}

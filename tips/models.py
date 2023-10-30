@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User  # Підключення моделі користувача Django
 
+from accounts.models import Pages
+
 
 class UserAdvice(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # Зв'язок з користувачем Django
@@ -9,3 +11,12 @@ class UserAdvice(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.timestamp}"
+
+
+class PageLink(models.Model):
+    page = models.ForeignKey(Pages, on_delete=models.CASCADE)
+
+    def get_page_display(self):
+        return self.page.title
+
+    get_page_display.short_description = 'Page Title'

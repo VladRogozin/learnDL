@@ -13,8 +13,11 @@ class Sentence(models.Model):
     )
 
     text = models.TextField()
+    translate = models.TextField(default="Нема")
+    helpText = models.TextField(default="Нема")
     autor = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     level = models.CharField(max_length=2, choices=LEVEL_CHOICES, default='A1')
+    photo = models.ImageField(upload_to='sentence_photos/', blank=True, null=True)
     hide = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 

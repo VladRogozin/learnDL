@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -20,9 +22,13 @@
                             <label for="{{ form.password.id_for_label }}" class="form-label">Пароль</label>
                             <input type="password" class="form-control" id="{{ form.password.id_for_label }}" name="{{ form.password.name }}" required>
                         </div>
-                        <div class="form-group mt-3">
-                            <button type="submit" class="btn b-color-red">Вхід</button>
+                        <div class="form-group mt-3 d-flex">
+                            <button type="submit" class="btn b-color-red mb-5" style="margin-right: auto;">Вхід</button>
+                            <button type="submit" class="btn b-color-green-blue mb-5" ><a style="font-size: 13px;" href="{% url 'register' %}">Зареєструватися</a></button>
                         </div>
+
+
+
                     </form>
                 </div>
             </div>
