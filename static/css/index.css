@@ -25,7 +25,7 @@ body {
 
 .header {
   background-color: rgb(238, 244, 245);
-  height: 100px;
+  height: 70px;
 }
 .header .container {
   display: flex;
@@ -47,7 +47,7 @@ body {
   margin-left: 15px;
 }
 .header__logo-img {
-  width: 100px;
+  width: 60px;
 }
 .header__search {
   width: 35%;
@@ -378,15 +378,22 @@ body {
   .container {
     width: 100%;
   }
+  .header {
+    height: 60px;
+  }
   .header__left {
+    width: 80%;
     margin-right: 0;
   }
   .header__logo {
-    display: none;
+    margin: 0;
+    padding: 0 5px;
+    order: 2;
   }
   .header__search {
+    width: 70%;
     margin-left: 0;
-    width: 80%;
+    order: 1;
   }
   .header__nav-list {
     display: none;

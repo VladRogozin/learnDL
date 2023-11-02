@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="col-md-6 mt-5 mb-5">
+    <h2 class="mt-0">Редагувати плейлист</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="title">Назва</label>
+            <input type="text" class="form-control" id="title" name="title" value="{{ playlist.title }}">
+            {% for error in form.title.errors %}
+                <p class="text-danger">{{ error }}</p>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            <label for="description">Опис</label>
+            <textarea class="form-control" id="description" name="description">{{ playlist.description }}</textarea>
+            {% for error in form.description.errors %}
+                <p class="text-danger">{{ error }}</p>
+            {% endfor %}
+        </div>
+        <br>
+        <button type="submit" class="btn b-color-orange">Зберегти зміни</button>
+    </form>
+</div>
+
+<div class="table-responsive" id="words-table">
+        <h3 class="page-title-list  text-center">Словар <img src="{% static 'img/dir.png' %}" alt="Вивчив" style="width: 40px;"></h3>
+        <table class="table mt-4">
+            <thead>
+                <tr>
+                    <th>Слово-Переклад</th>
+                    <th>Опис</th>
+                    {% if playlist.user == request.user %}
+                    <th>Видалити</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in playlist_items %}
+                <tr style="background-color: {{ item.row_color }}">
+                    {% if item.word.id %}
+                    <td>{{ item.word.word }} - {{ item.word.translate }}</td>
+                    <td>
+                        <span class="short-description">{{ item.word.description|slice:":20" }}</span>
+                        <span class="full-description" style="display: none;">{{ item.word.description }}</span>
+                            <img class="show-more-description" src="{% static 'img/dots.svg' %}" alt="Вивчив">
+                    </td>
+                    {% if playlist.user == request.user %}
+                    <td>
+                        <form method="post" action="{% url 'my:remove_word_from_playlist' playlist.id item.word.id %}">
+                            {% csrf_token %}
+                                <button class="btn b-color-red-orange remove-word-btn"
+                                        data-playlist-id="{{ playlist.id }}"
+                                        data-item-id="{{ item.word.id }}"
+                                        data-action="remove-word">Видалити слово</button>
+                        </form>
+                    </td>
+                    {% endif %}
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="table-responsive" id="sentences-table">
+        <h3 class="page-title-list text-center ">Збери речення<img src="{% static 'img/colect.png' %}" alt="Вивчив" style="width: 40px;"></h3>
+
+        <table class="table mt-4">
+            <thead>
+                <tr>
+                    <th>Речення</th>
+                    {% if playlist.user == request.user %}
+                    <th>Видалити</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in playlist_items %}
+                    <tr style="background-color: {{ item.row_color }}">
+                        {% if item.sentence.id %}
+                        <td>{{ item.sentence.text }}</td>
+                        {% if playlist.user == request.user %}
+                        <td>
+                                <form method="post" action="{% url 'my:remove_sentence_from_playlist' playlist.id item.sentence.id %}">
+                                    {% csrf_token %}
+
+                                        <button class="btn b-color-red-orange remove-sentence-btn"
+                                                data-playlist-id="{{ playlist.id }}"
+                                                data-item-id="{{ item.sentence.id }}"
+                                                data-action="remove-sentence">Видалити речення</button>
+                                </form>
+                        </td>
+                        {% endif %}
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div id="empty-playlist-message" style="display: none;">
+        <p>Плейлист порожній.</p>
+    </div>
+
+
+<script>
+
+const wordsTable = document.getElementById("words-table");
+const sentencesTable = document.getElementById("sentences-table");
+const emptyPlaylistMessage = document.getElementById("empty-playlist-message");
+
+// Проверяем, есть ли элементы в таблицах
+const wordsTableRows = wordsTable.getElementsByTagName("td");
+const sentencesTableRows = sentencesTable.getElementsByTagName("td");
+
+
+if (wordsTableRows.length <= 0) {
+    wordsTable.style.display = "none";
+}
+
+if (sentencesTableRows.length <= 0) {
+    sentencesTable.style.display = "none";
+}
+
+
+
+document.addEventListener('click', function (event) {
+    if (event.target.classList.contains('remove-word-btn') || event.target.classList.contains('remove-sentence-btn')) {
+        event.preventDefault(); // Предотвращаем переход по ссылке
+
+        const playlistId = event.target.getAttribute('data-playlist-id');
+        const itemId = event.target.getAttribute('data-item-id');
+        const action = event.target.getAttribute('data-action');
+
+        let url;
+        if (action === 'remove-word') {
+            url = `/my/remove_word_from_playlist/${playlistId}/${itemId}/`;
+        } else if (action === 'remove-sentence') {
+            url = `/my/remove_sentence_from_playlist/${playlistId}/${itemId}/`;
+        }
+
+        // Отправляем запрос на удаление
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),  // Получаем CSRF-токен
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Успешное удаление
+                    alert(data.message);
+                    // Здесь вы можете обновить содержимое страницы или скрыть удаленный элемент
+                } else {
+                    // Ошибка при удалении
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Помилка при відправці запиту:', error);
+            });
+    }
+});
+
+// Функция для получения CSRF-токена из cookie
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+
+</script>
+{% endblock %}

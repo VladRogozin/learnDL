@@ -59,7 +59,7 @@
 
 </div>
 
-<script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/web-speech-api@latest/lib/browser/speechSynthesis.umd.js"></script>
 
 <script>
 
@@ -107,8 +107,22 @@ function displayNextPhrase() {
             wordElement.addEventListener("click", () => {
                 if (wordElement.parentElement === wordsContainer) {
                     sentenceContainer.appendChild(wordElement);
-                    // Озвучиваем слово при клике
-                    responsiveVoice.speak(word, "UK English Male");
+
+                        const utterance = new SpeechSynthesisUtterance(word);
+                        const voices = speechSynthesis.getVoices();
+                        if (language == 'de') {
+                            const voice = voices.find((voice) => voice.lang === "de-DE");
+                            utterance.lang = "de-DE";
+                        } else if (language == 'en') {
+                            const voice = voices.find((voice) => voice.lang === "en-US");
+                            utterance.lang = "en-US";
+                        };
+                        utterance.voice = voice;
+                        utterance.rate = 1.2;
+                        utterance.volume = 1.5;
+                        speechSynthesis.speak(utterance);
+
+
                 } else {
                     wordsContainer.appendChild(wordElement);
                 }

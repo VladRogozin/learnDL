@@ -11,6 +11,15 @@ class SentenceForm(forms.ModelForm):
 
     level = forms.ChoiceField(choices=Sentence.LEVEL_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
 
+    def clean(self):
+        cleaned_data = super().clean()
+        text = cleaned_data.get('text')
+
+        if not text:
+            self.add_error('text', 'Це поле обов\'язкове для заповнення.')
+
+        return cleaned_data
+
     def clean_photo(self):
         photo = self.cleaned_data.get('photo')
 
@@ -22,10 +31,10 @@ class SentenceForm(forms.ModelForm):
                 raise ValidationError('Неможливо відкрити зображення.')
 
             # Проверка размера изображения
-            max_width = 1500
-            max_height = 1500
+            max_width = 1100
+            max_height = 1100
             if image.width > max_width or image.height > max_height:
-                raise ValidationError('Розмір зображення занадто великий. Максимальний розмір: 1500x1500 пікселів.')
+                raise ValidationError('Розмір зображення занадто великий. Максимальний розмір: 1100x1100 пікселів.')
 
             # Проверка веса файла
             max_size = 10 * 1024 * 512  # 10 МБ

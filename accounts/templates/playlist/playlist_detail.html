@@ -17,9 +17,6 @@
                 <tr>
                     <th>Слово-Переклад</th>
                     <th>Опис</th>
-                    {% if playlist.user == request.user %}
-                    <th>Видалити</th>
-                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -32,14 +29,6 @@
                         <span class="full-description" style="display: none;">{{ item.word.description }}</span>
                             <img class="show-more-description" src="{% static 'img/dots.svg' %}" alt="Вивчив">
                     </td>
-                    {% if playlist.user == request.user %}
-                    <td>
-                        <form method="post" action="{% url 'my:remove_word_from_playlist' playlist.id item.word.id %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn b-color-red-orange">Видалити</button>
-                        </form>
-                    </td>
-                    {% endif %}
                     {% endif %}
                 </tr>
                 {% endfor %}
@@ -58,9 +47,6 @@
             <thead>
                 <tr>
                     <th>Речення</th>
-                    {% if playlist.user == request.user %}
-                    <th>Видалити</th>
-                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -68,14 +54,6 @@
                     <tr style="background-color: {{ item.row_color }}">
                         {% if item.sentence.id %}
                         <td>{{ item.sentence.text }}</td>
-                        {% if playlist.user == request.user %}
-                        <td>
-                                <form method="post" action="{% url 'my:remove_sentence_from_playlist' playlist.id item.sentence.id %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn b-color-red-orange">Видалити</button>
-                                </form>
-                        </td>
-                        {% endif %}
                         {% endif %}
                     </tr>
                 {% endfor %}

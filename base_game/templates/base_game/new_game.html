@@ -4,9 +4,17 @@
 
 {% block content %}
 <div class="container mt-5 mb-5 font-family-game base-container">
-    <h1 class="word-title custom-tooltip" id="word">
-        <span id="translate" class="tooltip-text"> </span>
-    </h1>
+
+    <div class="row">
+        <div class="col-md-8 d-flex justify-content-center align-items-center">
+            <img id="photo" src="" class="img-fluid img-sentence-game">
+        </div>
+        <div class="col-md-4 d-flex justify-content-center align-items-center">
+            <h1 class="word-title custom-tooltip" id="word">
+                <span id="translate" class="tooltip-text"> </span>
+            </h1>
+        </div>
+    </div>
 
 
     <div id="result-message-container" class="text-center result-message-container">
@@ -35,7 +43,7 @@
 
 </div>
 
-<script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/web-speech-api@latest/lib/browser/speechSynthesis.umd.js"></script>
 
 <script>
     var playlist = {{ playlist_id }}
@@ -44,7 +52,10 @@
     var descriptionsList = document.getElementById('descriptions');
     var translateElement = document.getElementById('translate');
     var nextButton = document.getElementById('next-button');
+    var photoElement = document.getElementById('photo');
     var gameData = [];
+
+
 
 
 
@@ -56,13 +67,35 @@
     }
     console.log(gameData.length)
     function displayGameData() {
+        const voices = speechSynthesis.getVoices();
+        const voice = voices.filter((voice) => voice.lang === "de-DE")[0];
+
+
+
 
         currentIndex++;
         if (currentIndex < gameData.length) {
             var word = gameData[currentIndex].word;
             var descriptions = [gameData[currentIndex].description];
             var translate = [gameData[currentIndex].translate];
-            responsiveVoice.speak(gameData[currentIndex].word, "UK English Male");
+            var photo = [gameData[currentIndex].photo];
+            var language = [gameData[currentIndex].language];
+
+            const utterance = new SpeechSynthesisUtterance(word);
+            const voices = speechSynthesis.getVoices();
+            if (language == 'de') {
+                const voice = voices.find((voice) => voice.lang === "de-DE");
+                utterance.lang = "de-DE";
+            } else if (language == 'en') {
+                const voice = voices.find((voice) => voice.lang === "en-US");
+                utterance.lang = "en-US";
+            };
+            utterance.voice = voice;
+            utterance.rate = 1.2;
+            utterance.volume = 1.5;
+            speechSynthesis.speak(utterance);
+
+
 
             for (var i = 0; i < 2; i++) {
                 var randomIndex = Math.floor(Math.random() * gameData.length);
@@ -75,13 +108,17 @@
             shuffleArray(descriptions);
 
             wordElement.innerText = word;
-            console.log(word)
             descriptionsList.innerHTML = '';
 
             var translateElement = document.createElement('span');
             translateElement.className = 'tooltip-text';
             translateElement.textContent = translate[0]; // Устанавливаем текст перевода
             wordElement.appendChild(translateElement);
+            if (photo) {
+                photoElement.src = '{% get_media_prefix %}' + photo;
+            } else {
+                photoElement.style.display = "none";
+            }
 
             descriptions.forEach(function (description, index) {
                 var listItemContainer = document.createElement('div'); // Создаем контейнер для элемента li и кнопки
@@ -130,8 +167,33 @@
                     resultMessage.classList.remove("right_win"); // Убираем стили "right_win"
                     resultMessage.classList.remove("lose_lose"); // Убираем стили "lose_lose"
 
-                    // Запускаем звук
-                    responsiveVoice.speak(description, "UK English Male");
+
+
+                    const voices = speechSynthesis.getVoices();
+                    const utterance = new SpeechSynthesisUtterance(description);
+
+                    if (language == 'de') {
+                        const voice = voices.find((voice) => voice.lang === "de-DE");
+                        utterance.lang = "de-DE";
+                    } else if (language == 'en') {
+                        const voice = voices.find((voice) => voice.lang === "en-US");
+                        utterance.lang = "en-US";
+                    };
+
+
+                    // Установка голоса
+                    utterance.voice = voice;
+
+                    // Установка скорости речи
+                    utterance.rate = 1.2;
+
+                    // Установка громкости
+                    utterance.volume = 1.5;
+
+                    // Озвучивание текста
+                    speechSynthesis.speak(utterance);
+
+
                 });
 
                 descriptionsList.appendChild(listItemContainer); // Добавляем контейнер в список

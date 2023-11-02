@@ -2,7 +2,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from .forms import PlaylistForm, CustomPagesForm
+from .forms import PlaylistForm, CustomPagesForm, CustomUserCreationForm
 from .models import PlaylistItem, Playlist, Pages, SavedPage
 from base_game.models import BaseGameModel
 from django.contrib.auth.decorators import login_required
@@ -15,7 +15,7 @@ from django.contrib import messages
 
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
@@ -27,6 +27,8 @@ def register(request):
 
 @login_required
 def add_to_playlist(request):
+    response_data = {}
+
     if request.user.is_authenticated and request.method == 'POST':
         word_id = request.POST.get('word_id')
         playlist_id = request.POST.get('playlist')
@@ -34,11 +36,19 @@ def add_to_playlist(request):
         playlist = Playlist.objects.get(pk=playlist_id)
         playlist_item = PlaylistItem(user=request.user, word=word, playlist=playlist)
         playlist_item.save()
-    return redirect('my:create_playlist')
+        response_data['success'] = True
+        response_data['message'] = 'Слово успішно додано до плейлиста.'
+    else:
+        response_data['success'] = False
+        response_data['message'] = 'Помилка під час додавання слова в плейлист.'
+
+    return JsonResponse(response_data)
 
 
 @login_required
 def add_to_playlist_sentences(request):
+    response_data = {}
+
     if request.user.is_authenticated and request.method == 'POST':
         word_id = request.POST.get('word_id')
         playlist_id = request.POST.get('playlist')
@@ -46,11 +56,17 @@ def add_to_playlist_sentences(request):
         playlist = Playlist.objects.get(pk=playlist_id)
         playlist_item = PlaylistItem(user=request.user, sentence=word, playlist=playlist)
         playlist_item.save()
-    return redirect('my:create_playlist')
+        response_data['success'] = True
+        response_data['message'] = 'Речення успішно додано до плейлиста.'
+    else:
+        response_data['success'] = False
+        response_data['message'] = 'Помилка під час додавання речення в плейлист.'
+
+    return JsonResponse(response_data)
+
 
 @login_required
 def user_playlist(request):
-    # Получите текущего пользователя
     user = request.user
 
     # Получите все слова в плейлисте текущего пользователя
@@ -95,6 +111,22 @@ def create_playlist(request):
         'user_playlists': user_playlists,
         'page_sentences': page_sentences,
     })
+
+
+def patch_playlist(request, playlist_id):
+    playlist = get_object_or_404(Playlist, id=playlist_id, user=request.user)
+    playlist_items = PlaylistItem.objects.filter(playlist=playlist)
+
+    if request.method == 'POST':
+        form = PlaylistForm(request.POST, instance=playlist)
+        if form.is_valid():
+            form.save()
+            return redirect('my:playlist_detail', playlist_id=playlist.id)
+    else:
+        form = PlaylistForm(instance=playlist)
+
+    return render(request, 'playlist/patch_playlist.html',
+                  {'form': form, 'playlist': playlist, 'playlist_items': playlist_items})
 
 
 def playlist_detail(request, playlist_id=None, playlist_uuid=None):
@@ -145,8 +177,11 @@ def remove_word_from_playlist(request, playlist_id, word_id):
     playlist_item = PlaylistItem.objects.filter(playlist=playlist, word=word).first()
     if playlist_item:
         playlist_item.delete()
+        response_data = {'message': 'Слово успішно видалено з плейлиста.'}
+    else:
+        response_data = {'message': 'Щось не так, спробуйте ще!'}
 
-    return redirect('my:playlist_detail', playlist_id=playlist_id)
+    return JsonResponse(response_data)
 
 
 def remove_sentence_from_playlist(request, playlist_id, sentence_id):
@@ -158,7 +193,11 @@ def remove_sentence_from_playlist(request, playlist_id, sentence_id):
     if playlist_item:
         playlist_item.delete()
 
-    return redirect('my:playlist_detail', playlist_id=playlist_id)
+        response_data = {'message': 'Слово успішно видалено з плейлиста.'}
+    else:
+        response_data = {'message': 'Щось не так, спробуйте ще!'}
+
+    return JsonResponse(response_data)
 
 
 def delete_playlist(request, playlist_id):
@@ -235,6 +274,21 @@ def create_pages(request):
         form = CustomPagesForm(request.user)
 
     return render(request, 'page/create_pages.html', {'form': form})
+
+
+def patch_page(request, page_id):
+    page = get_object_or_404(Pages, id=page_id)
+
+    if request.method == 'POST':
+        form = CustomPagesForm(request.user, request.POST, instance=page)
+
+        if form.is_valid():
+            form.save()
+            return redirect('my:view_page', page_id=page.id)
+    else:
+        form = CustomPagesForm(request.user, instance=page)
+
+    return render(request, 'page/update_page.html', {'form': form, 'page': page})
 
 
 def delete_page(request, page_id):

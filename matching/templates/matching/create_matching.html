@@ -30,6 +30,9 @@
                 <div class="form-group">
                     <label for="text">Речення</label>
                     <input type="text" class="form-control" id="text" name="text">
+                    {% for error in form.text.errors %}
+                                <p class="text-danger">{{ error }}</p>
+                  {% endfor %}
                 </div>
                 <div class="form-group">
                     <label for="translate">Переклад</label>
@@ -43,34 +46,25 @@
                     <label for="level">Рівень</label>
                     {{ form.level }}
                 </div>
-                                <br>
-                           <div class="form-group custom-tooltip">
-                                <label for="hide">Приховати</label>
-                                {{ form.hide }}
-                               <span class="tooltip-text">Приховати це слово від інших користувачів. Воно буде доступно тільки вам.</span>
-                           </div>
-                                <br>
+                <br>
+                <div class="form-group custom-tooltip">
+                    <label for="hide">Приховати</label>
+                    {{ form.hide }}
+                    <span class="tooltip-text">Приховати це слово від інших користувачів. Воно буде доступно тільки вам.</span>
+                </div>
+                <br>
                 <div class="form-group">
                     <label for="photo">Фото</label>
                     {{ form.photo }}
+                    {% for error in form.photo.errors %}
+                                <p class="text-danger">{{ error }}</p>
+                  {% endfor %}
                 </div>
                 <br>
                 <div class="form-group mt-3">
                     <button type="submit" class="btn b-color-orange btn-lg">Створити</button>
                 </div>
             </form>
-            {% if form.errors %}
-                <div class="alert alert-danger mt-3">
-                    <ul>
-                        {% for field, errors in form.errors.items %}
-                            {% for error in errors %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
-
         </div>
     </div>
 </div>

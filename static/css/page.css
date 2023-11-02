@@ -87,6 +87,13 @@
     cursor: pointer; /* Изменить вид курсора при наведении на кнопку */
 }
 
+.update-button-page {
+    position: absolute;
+    top: 75%;
+    right: 23%;
+    cursor: pointer; /* Изменить вид курсора при наведении на кнопку */
+}
+
 .link-button-page {
     position: absolute;
     top: 75%;

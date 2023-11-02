@@ -30,6 +30,7 @@
                             </a>
 
                             {% if user.is_authenticated and user == page.user %}
+                                <a href="{% url 'my:edit_page' page.id %}" class="update-button-page"><img src="{% static 'img/update.svg' %}" alt="Видалити" ></a>
                                 <a data-page-id="{{ page.id }}" class="delete-button-page"><img src="{% static 'img/delete.svg' %}" alt="Видалити" ></a>
                             {% endif %}
                         </div>

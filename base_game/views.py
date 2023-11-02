@@ -18,7 +18,7 @@ from accounts.models import Pages
 @login_required
 def create_words(request):
     if request.method == 'POST':
-        form = BaseGameForms(request.POST)
+        form = BaseGameForms(request.POST, request.FILES)
         if form.is_valid():
             word_instance = form.save(commit=False)
             word_instance.autor = request.user
@@ -74,7 +74,7 @@ def new_game(request):
 
 def new_game_new(request, playlist):
     descriptions_2 = BaseGameModel.objects.filter(playlistitem__playlist=playlist)
-    available_words = descriptions_2.values('word', 'description', 'translate')
+    available_words = descriptions_2.values('word', 'description', 'translate', 'photo', 'language')
     available_words = list(available_words)
     return JsonResponse(available_words, safe=False)
 

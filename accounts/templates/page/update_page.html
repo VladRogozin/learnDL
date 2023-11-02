@@ -3,23 +3,21 @@
 {% load static %}
 
 {% block content %}
-
-
 <div class="container mt-5 font-family-game base-container">
     <form method="post" class="container">
         {% csrf_token %}
 
         <div class="form-group mb-3">
             {{ form.title.label_tag }}
-            <input type="text" class="form-control" name="title" id="title" />
+            <input type="text" class="form-control" name="title" id="title" value="{{ page.title }}" />
         </div>
         {% for error in form.title.errors %}
-                <p class="text-danger">{{ error }}</p>
+            <p class="text-danger">{{ error }}</p>
         {% endfor %}
 
         <div class="form-group mb-3">
             {{ form.description.label_tag }}
-            <input type="text" class="form-control" name="description" id="description" />
+            <input type="text" class="form-control" name="description" id="description" value="{{ page.description }}" />
         </div>
 
         <div class="form-group">
@@ -27,7 +25,10 @@
             <div class="form-check-box">
                 {% for playlist in form.playlists.field.queryset %}
                     <div class="form-check">
-                        <input type="checkbox" class="form-check-input" name="playlists" value="{{ playlist.id }}" id="playlist{{ playlist.id }}">
+                        <input type="checkbox" class="form-check-input" name="playlists" value="{{ playlist.id }}" id="playlist{{ playlist.id }}"
+                            {% for item in page.playlists.all %}
+                                {% if item.id == playlist.id %}checked{% endif %}
+                            {% endfor %}>
                         <label class="form-check-label" for="playlist{{ playlist.id }}">{{ playlist.title }}</label>
                     </div>
                 {% endfor %}
@@ -37,9 +38,9 @@
             {% endfor %}
         </div>
 
-
         <button type="submit" class="btn b-color-orange mt-3">Создать</button>
     </form>
-
 </div>
+
+
 {% endblock %}

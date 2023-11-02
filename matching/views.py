@@ -24,7 +24,7 @@ def matching_game(request):
         sentences_id = random_sentence
         random_sentence = random_sentence.text
 
-    context = {'random_sentence': random_sentence, 'sentences_id': sentences_id,}
+    context = {'random_sentence': random_sentence, 'sentences_id': sentences_id}
     return render(request, 'matching/matching_game.html', context)
 
 
