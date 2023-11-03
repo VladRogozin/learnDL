@@ -7,9 +7,11 @@ from PIL import Image
 class SentenceForm(forms.ModelForm):
     class Meta:
         model = Sentence
-        fields = ['text', 'translate', 'helpText', 'level', 'hide', 'photo']
+        fields = ['text', 'translate', 'helpText', 'level', 'hide', 'photo', 'language']
 
     level = forms.ChoiceField(choices=Sentence.LEVEL_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    language = forms.ChoiceField(choices=Sentence.LANGUAGE_CHOICES,
+                                 widget=forms.Select(attrs={'class': 'form-control'}))
 
     def clean(self):
         cleaned_data = super().clean()

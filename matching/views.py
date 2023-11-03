@@ -66,7 +66,8 @@ def new_sentences_game(request):
 
 
 def new_sentences_game_new(request, playlist):
-    descriptions = Sentence.objects.filter(playlistitem__playlist=playlist).values('text', 'translate', 'helpText', 'photo',)
+    descriptions = Sentence.objects.filter(playlistitem__playlist=playlist).values('text', 'translate', 'helpText',
+                                                                                   'photo', 'language')
     phrases = list(descriptions)
 
     return JsonResponse({'phrases': phrases}, safe=False)

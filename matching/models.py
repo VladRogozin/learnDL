@@ -3,6 +3,11 @@ from django.contrib.auth.models import User
 
 
 class Sentence(models.Model):
+    LANGUAGE_CHOICES = (
+        ('en', 'English'),
+        ('de', 'German'),
+    )
+
     LEVEL_CHOICES = (
         ('A1', 'A1'),
         ('A2', 'A2'),
@@ -12,6 +17,7 @@ class Sentence(models.Model):
         ('C2', 'C2'),
     )
 
+    language = models.CharField(max_length=2, choices=LANGUAGE_CHOICES)
     text = models.TextField()
     translate = models.TextField(default="Нема")
     helpText = models.TextField(default="Нема")

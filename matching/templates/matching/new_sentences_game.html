@@ -95,6 +95,7 @@ function displayNextPhrase() {
         counter = counter + 1;
         const words = phrase.text.split(" ").sort(() => Math.random() - 0.5);
 
+
         // Очищаем контейнеры
         sentenceContainer.innerHTML = "";
         wordsContainer.innerHTML = "";
@@ -104,23 +105,31 @@ function displayNextPhrase() {
             const wordElement = document.createElement("span");
             wordElement.textContent = word;
             wordElement.className = "draggable text-center sentence-game-word";
+            const language = [phrase.language];
+
+
+            let voice; // Переменная объявлена во внешней области видимости
+
             wordElement.addEventListener("click", () => {
                 if (wordElement.parentElement === wordsContainer) {
                     sentenceContainer.appendChild(wordElement);
 
-                        const utterance = new SpeechSynthesisUtterance(word);
-                        const voices = speechSynthesis.getVoices();
-                        if (language == 'de') {
-                            const voice = voices.find((voice) => voice.lang === "de-DE");
-                            utterance.lang = "de-DE";
-                        } else if (language == 'en') {
-                            const voice = voices.find((voice) => voice.lang === "en-US");
-                            utterance.lang = "en-US";
-                        };
-                        utterance.voice = voice;
-                        utterance.rate = 1.2;
-                        utterance.volume = 1.5;
-                        speechSynthesis.speak(utterance);
+                    const utterance = new SpeechSynthesisUtterance(word);
+                    const voices = speechSynthesis.getVoices();
+
+                    if (language == 'de') {
+                        voice = voices.find((voice) => voice.lang === "de-DE");
+                        utterance.lang = "de-DE";
+                    } else if (language == 'en') {
+                        voice = voices.find((voice) => voice.lang === "en-US");
+                        utterance.lang = "en-US";
+                    }
+
+                    utterance.voice = voice;
+                    utterance.rate = 1.2;
+                    utterance.volume = 1.5;
+                    speechSynthesis.speak(utterance);
+
 
 
                 } else {

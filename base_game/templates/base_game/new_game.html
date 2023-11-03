@@ -79,8 +79,9 @@
             var descriptions = [gameData[currentIndex].description];
             var translate = [gameData[currentIndex].translate];
             var photo = [gameData[currentIndex].photo];
-            var language = [gameData[currentIndex].language];
 
+            var language = [gameData[currentIndex].language];
+console.log(language)
             const utterance = new SpeechSynthesisUtterance(word);
             const voices = speechSynthesis.getVoices();
             if (language == 'de') {

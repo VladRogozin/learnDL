@@ -17,7 +17,13 @@
                         </div>
                         <div class="col-3">
                             <a href="{% url 'my:edit_playlist' playlist.id %}" class="mx-2 mb-2 copy-link-btn mr-2"><img src="{% static 'img/update.svg' %}" alt="" style="width: 17px; height: 17px;" title="Копіювати посилання"></a>
-                            <a class="mx-2 mb-2 copy-link-btn mr-2"><img src="{% static 'img/link.svg' %}" alt="" style="width: 17px; height: 17px;" title="Копіювати посилання"></a>
+
+
+                            <a class="copy-link-btn function-link" data-link="{{ request.get_host }}{% url 'my:playlist_detail' playlist.id %}">
+                                <img src="{% static 'img/link.svg' %}" alt="Видалити">
+                            </a>
+
+
                             <a href="{% url 'my:delete_playlist' playlist.id %}" class="ml-2 delete-playlist" data-id="{{ playlist.id }}" title="Видалити">
                                 <img src="{% static 'img/complaint.svg' %}" alt="" style="width: 17px; height: 17px;">
                             </a>
@@ -253,21 +259,26 @@ $(document).ready(function() {
 
 
     // Копирования плейлиста
-    const copyLinkButtons = document.querySelectorAll('.copy-link-btn');
+        const copyButtons = document.querySelectorAll(".function-link");
+            copyButtons.forEach(button => {
+                button.addEventListener("click", function() {
+                    const linkToCopy = button.getAttribute("data-link");
+                    const tempInput = document.createElement("input");
+                    document.body.appendChild(tempInput);
+                    tempInput.setAttribute("value", linkToCopy);
+                    tempInput.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(tempInput);
 
-    copyLinkButtons.forEach((button, index) => {
-        button.addEventListener('click', function() {
-            var playlistLinks = document.querySelectorAll('.playlist-link');
-            var playlistLink = playlistLinks[index];  // Отримуємо відповідне посилання на плейлист
+                    const statusMessage = document.getElementById("status-message");
+                    statusMessage.innerHTML = "Посилання скопійовано!";
+                    statusMessage.style.display = "block";
 
-            var tempInput = document.createElement('input');
-            tempInput.value = window.location.origin + playlistLink.getAttribute('href');  // Отримуємо повний URL з посилання на плейлист
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-        });
-    });
+                    setTimeout(function() {
+                        statusMessage.style.display = "none";
+                    }, 3000);
+                });
+            });
 
 
 
@@ -388,5 +399,4 @@ function addSentenceToPlaylist(sentenceId, playlistId) {
 </script>
 
 {% endblock %}
-
 
