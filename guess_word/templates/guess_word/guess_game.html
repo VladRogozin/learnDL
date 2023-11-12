@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<body>
+
+<div class="container d-flex flex-column align-items-center justify-content-center mt-5 font-family-game base-container">
+    <div id="game-container" class="text-center mb-4 " style="display: none;">
+        <img id="image-display" src="" alt="Image" class="img-fluid mb-3 image-guess-game">
+        <div id="word-container" class="border p-3 mb-2 bg-light">
+            <p id="word-display" class="h1"></p>
+        </div>
+        <div id="help-words-container" class="border p-3 mb-2 bg-light">
+            <p id="help-words-display" class=""></p>
+        </div>
+    </div>
+    <button id="start-btn" onclick="startGame()" class="guess-button-start">Починаймо</button>
+    <button id="next-btn" onclick="nextWord()" style="display: none;" class="btn btn-success mt-3">Наступне слово</button>
+    <button id="game-next-btn" onclick="reloadPage()" class="guess-button-start" style="display: none;">Інші слова</button>
+</div>
+
+<script>
+    var words = {{ words|safe }};
+    var currentWordIndex = -1;
+
+
+    function reloadPage() {
+        location.reload();
+    }
+
+    function startGame() {
+        // Начать игру: установить индекс на -1 перед показом первого слова
+        currentWordIndex = -1;
+        nextWord();
+
+        // Скрыть кнопку "Start" и показать "Next Word"
+        document.getElementById('start-btn').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'block';
+        document.getElementById('game-container').style.display = 'block';
+        document.getElementById('game-next-btn').style.display = 'none';
+    }
+
+    function nextWord() {
+        // Перейти к следующему слову
+        currentWordIndex++;
+
+        // Проверить, закончились ли слова
+        if (currentWordIndex < words.length) {
+            // Показать изображение
+            document.getElementById('image-display').src = words[currentWordIndex].photo_url;
+
+            // Показать слово
+            document.getElementById('word-display').innerText = words[currentWordIndex].guess_word;
+
+            // Показать слова помощи
+            document.getElementById('help-words-display').innerText = words[currentWordIndex].help_words;
+
+            // Показать кнопку "Next Word"
+            document.getElementById('next-btn').style.display = 'block';
+        } else {
+            // Слова закончились, скрыть кнопку "Next Word" и показать "Start" для новой игры
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('start-btn').style.display = 'block';
+            document.getElementById('game-container').style.display = 'none';
+            document.getElementById('game-next-btn').style.display = 'block';
+        }
+    }
+</script>
+
+{% endblock %}

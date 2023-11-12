@@ -18,8 +18,19 @@ def add_advice(request):
     else:
         form = UserAdviceForm()
 
-    # Получите связанные объекты Pages через PageLink
+        # Получите связанные объекты PageLink
     page_links = PageLink.objects.all()
-    pages = [page_link.page for page_link in page_links]
 
-    return render(request, 'base/base.html', {'form': form, 'pages': pages})
+    # Создайте список словарей, каждый словарь содержит информацию о странице и ее изображении
+    pages_with_icons = []
+    for page_link in page_links:
+        page = page_link.page
+        page_info = {
+            'id': page.id,
+            'title': page.title,
+            'description': page.description,
+            'icon_url': page_link.icons.url if page_link.icons else ''  # URL изображения или пустая строка
+        }
+        pages_with_icons.append(page_info)
+
+    return render(request, 'base/base.html', {'form': form, 'pages_with_icons': pages_with_icons})

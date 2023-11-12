@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Слова с изображениями</title>
+</head>
+<body>
+    <h1>Слова с изображениями</h1>
+    <ul>
+        {% for word in words %}
+            <li>
+                <strong>{{ word.guess_word }}</strong>
+                <p>{{ word.help_words }}</p>
+                {% if word.photo %}
+                    <img src="{{ word.photo.url }}" alt="{{ word.guess_word }}">
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

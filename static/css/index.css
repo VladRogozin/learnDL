@@ -181,30 +181,22 @@ body {
 }
 
 .absolute-text {
-  background-color: rgba(255, 229, 199, 0.8);
-  padding: 30px 70px;
   position: absolute;
   top: 15%;
   left: 38%;
   transform: translate(-50%, -50%);
   z-index: 4;
-  color: #282c47;
   letter-spacing: 2px;
-  border-radius: 30px;
   margin-top: 30px;
 }
 
 .absolute-text-2 {
-  background-color: rgba(255, 229, 199, 0.8);
-  padding: 30px 70px;
   position: absolute;
   top: 50%;
   left: 45%;
   transform: translate(-50%, -50%);
   z-index: 4;
-  color: #282c47;
   letter-spacing: 2px;
-  border-radius: 30px;
   margin-top: 30px;
 }
 
@@ -212,7 +204,25 @@ body {
   font-weight: 850;
   font-size: 40px;
   margin-bottom: 15px;
+  background-color: rgba(255, 255, 160, 0.95); /* Додали фон для тексту */
+  display: inline; /* Зробили текст блоком inline */
+  border-radius: 10px;
+  color: #00003e;
+    padding: 10px 10px;
 }
+
+.absolute-text-2 h2 {
+  font-weight: 850;
+  font-size: 40px;
+  margin-bottom: 15px;
+  background-color: rgba(255, 255, 160, 0.95); /* Додали фон для тексту */
+  display: inline; /* Зробили текст блоком inline */
+  border-radius: 10px;
+  color: #00003e;
+  line-height: 1.8; /* Збільшили відстань між строками */
+    padding: 10px 10px;
+}
+
 
 .find-block {
   min-height: 600px;
@@ -532,18 +542,19 @@ body {
     height: 80px;
   }
   .absolute-text-2 {
-    background-color: rgba(	255, 229, 199, 0.8);
-    width: 70%;
+    width: 90%;
     padding: 15px 25px;
     top: 40%;
     left: 50%;
+      line-height: 2.7; /* Збільшили відстань між строками */
+
   }
   .absolute-text {
-    background-color: rgba(	255, 229, 199, 0.8);
-    width: 80%;
+    width: 50%;
     padding: 15px 25px;
     top: 12%;
     left: 70%;
+      line-height: 2.7; /* Збільшили відстань між строками */
   }
   .absolute-text h1 {
     font-size: 25px;

@@ -1,0 +1,37 @@
+.image-guess-game {
+        max-width: 500px;
+        max-height: 350px;
+        border-radius: 10px; /* закругленные углы */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* тень */
+        transition: transform 1s ease-in-out; /* анимация увеличения */
+}
+
+
+@media (max-width: 768px) {
+    .image-guess-game {
+        max-width: 300px;
+        max-height: 300px;
+    }
+}
+
+.image-guess-game:hover {
+        transform: scale(1.05); /* увеличение при наведении */
+}
+
+.guess-button-start {
+    background-color: #a062db;
+    width: 150px; /* Ширина кнопки */
+    height: 140px; /* Высота кнопки */
+    border-radius: 50%; /* Для создания круглой формы */
+    font-size: 22px; /* Размер шрифта */
+    padding: 20px; /* Внутренний отступ */
+    border: 4px solid #471a72;
+    color: #160823; /* Цвет текста внутри кнопки */
+    transition: border 1.5s ease, background-color 0.3s ease; /* Анимация изменения свойства border и background-color в течение 0.3 секунды */
+}
+
+.guess-button-start:hover {
+    color: #160823;
+    border: 4px solid #a062db; /* Цвет границы при наведении */
+    background-color: #c7a2ea; /* Цвет фона при наведении */
+}

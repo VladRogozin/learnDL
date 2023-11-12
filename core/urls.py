@@ -16,6 +16,7 @@ urlpatterns = [
     path('my/', include('accounts.urls')),
     path('artikel/', include('artikel.urls')),
     path('matching/', include('matching.urls')),
+    path('guess/', include('guess_word.urls')),
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('register/', register, name='register'),

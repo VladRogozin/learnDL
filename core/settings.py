@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'tips',
     'artikel',
     'matching',
+    'guess_word',
 
 
 ]

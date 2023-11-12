@@ -15,6 +15,7 @@ class UserAdvice(models.Model):
 
 class PageLink(models.Model):
     page = models.ForeignKey(Pages, on_delete=models.CASCADE)
+    icons = models.ImageField(upload_to='user_icons/', blank=True, null=True)
 
     def get_page_display(self):
         return self.page.title

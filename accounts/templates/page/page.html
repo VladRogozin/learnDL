@@ -32,7 +32,7 @@
                         <p class="exercise-title">{{ playlist.title }}<img class="random-image" alt="Вивчив" style="width: 40px; padding: 2px;"></p>
                     </div>
                     <hr>
-                    <p class="text-center">{{ page.description }}</p>
+                    <p class="text-center">{{ playlist.description }}</p>
                     <hr>
                     <a href="{% url 'my:playlist_detail' playlist.id %}" class="btn b-color-orange">Займатися</a>
                 </div>
